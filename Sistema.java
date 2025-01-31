@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+//PRA FAZER: se escrever no menu algo q n é numero, quebra - concertar
 public class Sistema {
 
     static ArrayList<Usuario> users;
@@ -24,6 +25,33 @@ public class Sistema {
 
         Scanner scanner = new Scanner(System.in);
 
+        int opcao;
+
+        do {
+            System.out.println("\nInício:");
+            System.out.println("1. Entrar");
+            System.out.println("0. Sair");
+            System.out.print("Escolha uma opção: ");
+            opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    Login(sistema);
+                    break;
+                case 0:
+                    System.out.println("Saindo do sistema.");
+                    break;
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+        } while (opcao != 0);
+    
+        scanner.close();
+    }
+                    
+    public static void Login(Sistema sistema){
+        Scanner scanner = new Scanner(System.in);
+
         System.out.println("Digite o nome de usuário: ");
         String nomeUsuario = scanner.nextLine();
 
@@ -44,8 +72,6 @@ public class Sistema {
         } else {
             System.out.println("Credenciais inválidas. Tente novamente.");
         }
-
-        scanner.close();
     }
 
     public void exibirMenu(Usuario usuario) {
@@ -59,8 +85,6 @@ public class Sistema {
         } else {
             System.out.println("Tipo de usuário inválido.");
         }
-
-        scanner.close();
     }
 
     private void exibirMenuUsuario(Usuario usuario) {

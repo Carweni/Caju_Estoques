@@ -1,10 +1,9 @@
 public class Gerente extends Usuario {
     private boolean[] permissao;
 
-    public Gerente(String nome, int id, String cargo, String senha) {
+    public Gerente(String nome, int id, String cargo, String senha, boolean[] permissao) {
         super(nome, id, cargo, senha);
-        
-        this.permissao = new boolean[8];;
+        this.permissao = permissao;
     }
 
     public boolean[] getPermissao() {

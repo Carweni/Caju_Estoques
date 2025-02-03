@@ -7,7 +7,7 @@ public class Sistema {
     static ArrayList<Usuario> users;
     private ArrayList<Movimentacao> movimentacoes;
     private ArrayList<Produto> products;
-    private ArrayList<Fornecedor> fornecedores;
+    static ArrayList<Fornecedor> fornecedores;
 
     public Sistema() {
         users = new ArrayList<>();
@@ -81,7 +81,9 @@ public class Sistema {
             ADMgeral admGeral = (ADMgeral) usuario;
             admGeral.exibirMenuAdmGeral();
         } else if (usuario instanceof Gerente) {
-            exibirMenuUsuario(usuario);
+            Gerente gerente = (Gerente) usuario;
+            gerente.exibirMenuGerente();
+            //exibirMenuUsuario(usuario);
         } else {
             System.out.println("Tipo de usuário inválido.");
         }

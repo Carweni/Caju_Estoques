@@ -54,8 +54,14 @@ public class Gerente extends Usuario {
                     }
                     break;
                 case 3:
+                    if(permissao[1]){
+                        cadastrarProduto();
+                    }
                     break;
                 case 4:
+                    if(permissao[1]){
+                        removerProduto();
+                    }
                     break;
                 case 5:
                     break;
@@ -103,6 +109,7 @@ public class Gerente extends Usuario {
 
     // FAZER PRODUTO N RECEBER MAIS ENTRADAS SE FORNECEDOR N EXISTIR MAIS
     //IDEIA : FAZER N PODER CADASTRAR COM ID 0 E DEIXAR COMO OPÇÃO PRA SÓ CANCELAR REMOÇÃO, N SEI
+    // FAZER SE N TIVER FORNECEDOR ELE CANCELAR AÇÃO DIRETO
     private void removerFornecedor() {
         Scanner scanner = new Scanner(System.in);
 
@@ -133,6 +140,104 @@ public class Gerente extends Usuario {
         for (Fornecedor fornecedor : Sistema.fornecedores) {
             if (fornecedor.getId() == id) {
                 return fornecedor;
+            }
+        }
+        return null;
+    }
+
+    public void cadastrarProduto(){
+        Scanner scanner = new Scanner(System.in);
+        boolean IdExist;
+
+        System.out.println("\nCadastrar Produto:");
+
+        System.out.print("Digite o nome do Produto: ");
+        String nome = scanner.nextLine();
+
+        int id;
+        do{
+            System.out.print("Digite o ID do Produto: ");
+            id = scanner.nextInt();
+            IdExist=false;
+            for(int i=0; i<Sistema.products.size();i++){
+                if(Sistema.products.get(i).getId()==id){
+                    IdExist=true;
+                    System.out.println("ID de produto já existente no sistema, insira outro id: ");
+                    break;
+                }
+            };
+        }while(IdExist);
+        scanner.nextLine(); 
+        
+        System.out.print("Digite a categoria do produto: ");
+        String categoria = scanner.nextLine();
+
+        System.out.print("Digite o preço de venda do produto: ");
+        double price = scanner.nextDouble();
+        scanner.nextLine();
+
+        System.out.print("Digite o custo de compra do produto: ");
+        double cost = scanner.nextDouble();
+        scanner.nextLine();
+
+        System.out.print("Digite o estoque minimo desejado do produto: ");
+        int minCapacity = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Digite o estoque máximo do produto: ");
+        int maxCapacity = scanner.nextInt();
+        scanner.nextLine();
+
+        //PRA FAZER - N DEIXAR CADASTRAR COM FORNECEDOR VAZIO (ID Q N TEM FORNECEDOR)
+        System.out.print("Qual o fornecedor do produto: ");
+        listarFornecedores();
+        System.out.println("Selecione o ID do fornecedor:");
+        int fornecedorID = scanner.nextInt();
+        scanner.nextLine();
+
+        Fornecedor fornecedor = encontrarFornecedorPorId(fornecedorID);
+        Produto produto = new Produto(nome, id, categoria, price, cost, minCapacity, maxCapacity, fornecedor);
+
+        Sistema.products.add(produto);
+        System.out.println("Produto cadastrado com sucesso.");
+    }
+    
+    //PRA FAZER - FAZER SE N TIVER PRODUTO ELE CANCELAR AÇÃO DIRETO
+    private void removerProduto() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Lista de Produtos:");
+        listarProdutos();
+
+        System.out.print("Digite o ID do Produto para remover: ");
+        int id = scanner.nextInt();
+        Produto produto = encontrarProdutoPorId(id);
+
+        //FAZER: PEDIR CONFIRMAÇÃO PARA REMOVER
+        if (produto != null) {
+            if(produto.getQtdEstoque() == 0){
+                Sistema.products.remove(produto);
+                System.out.println("Produto removido com sucesso.");
+            }else{
+                System.out.println("Ainda há unidades em estoque, remova antes de deletar o produto.");
+            }
+        } else {
+            System.out.println("Produto não encontrado.");
+        }
+    }
+
+    public void listarProdutos() {
+        for(int i=0; i<Sistema.products.size();i++){
+            Produto produto = Sistema.products.get(i);
+            System.out.print(produto.getId()+ "- ");
+            System.out.println(produto.getNome());
+        }
+    }
+
+    private Produto encontrarProdutoPorId(int id) {
+        for (Produto produto : Sistema.products) {
+            if (produto.getId() == id) {
+                return produto;
             }
         }
         return null;

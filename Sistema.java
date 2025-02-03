@@ -6,7 +6,7 @@ public class Sistema {
 
     static ArrayList<Usuario> users;
     private ArrayList<Movimentacao> movimentacoes;
-    private ArrayList<Produto> products;
+    static ArrayList<Produto> products;
     static ArrayList<Fornecedor> fornecedores;
 
     public Sistema() {

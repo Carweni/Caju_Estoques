@@ -32,4 +32,41 @@ public class Produto {
     public int getQtdEstoque(){
         return qtdEstoque;
     }
+
+    public void setID(int id){
+        this.ID = id;
+    }
+
+    public void setNome(String nome){
+        this.nome = nome;
+    }
+
+    public void setCategoria(String categoria){
+        this.categoria = categoria;
+    }
+
+    public void setPrice(Double price){
+        this.price = price;
+    }
+
+    public void setCost(Double cost){
+        this.cost = cost;
+    }
+
+    public void setMinCapacity(int minCapacity){
+        this.minCapacity=minCapacity;
+    }
+
+    public void setMaxCapacity(int maxCapacity){
+        this.maxCapacity=maxCapacity;
+    }
+
+    public void setFornecedor(Fornecedor fornecedor){
+        this.fornecedor=fornecedor;
+    }
+
+    //fazer imprimir todos os atributos
+    public void mostrarProduto(){
+        System.out.println(ID + ' ' + nome + ' ');
+    }
 }

@@ -108,23 +108,26 @@ public class Gerente extends Usuario {
     }
 
     // FAZER PRODUTO N RECEBER MAIS ENTRADAS SE FORNECEDOR N EXISTIR MAIS
-    //IDEIA : FAZER N PODER CADASTRAR COM ID 0 E DEIXAR COMO OPÇÃO PRA SÓ CANCELAR REMOÇÃO, N SEI
-    // FAZER SE N TIVER FORNECEDOR ELE CANCELAR AÇÃO DIRETO
+    // IDEIA : FAZER N PODER CADASTRAR COM ID 0 E DEIXAR COMO OPÇÃO PRA SÓ CANCELAR REMOÇÃO, N SEI
     private void removerFornecedor() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Lista de Fornecedores:");
-        listarFornecedores();
-
-        System.out.print("Digite o ID do Fornecedor para remover: ");
-        int id = scanner.nextInt();
-        Fornecedor fornecedor = encontrarFornecedorPorId(id);
-
-        if (fornecedor != null) {
-            Sistema.fornecedores.remove(fornecedor);
-            System.out.println("Fornecedor removido com sucesso.");
+        if(Sistema.fornecedores.size()==0){
+            System.out.println("Não há fornecedores registrados.");
         } else {
-            System.out.println("Fornecedor não encontrado.");
+            Scanner scanner = new Scanner(System.in);
+
+            System.out.println("Lista de Fornecedores:");
+            listarFornecedores();
+    
+            System.out.print("Digite o ID do Fornecedor para remover: ");
+            int id = scanner.nextInt();
+            Fornecedor fornecedor = encontrarFornecedorPorId(id);
+    
+            if (fornecedor != null) {
+                Sistema.fornecedores.remove(fornecedor);
+                System.out.println("Fornecedor removido com sucesso.");
+            } else {
+                System.out.println("Fornecedor não encontrado.");
+            }
         }
     }
 
@@ -202,30 +205,147 @@ public class Gerente extends Usuario {
         System.out.println("Produto cadastrado com sucesso.");
     }
     
-    //PRA FAZER - FAZER SE N TIVER PRODUTO ELE CANCELAR AÇÃO DIRETO
     private void removerProduto() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Lista de Produtos:");
-        listarProdutos();
-
-        System.out.print("Digite o ID do Produto para remover: ");
-        int id = scanner.nextInt();
-        Produto produto = encontrarProdutoPorId(id);
-
-        //FAZER: PEDIR CONFIRMAÇÃO PARA REMOVER
-        if (produto != null) {
-            if(produto.getQtdEstoque() == 0){
-                Sistema.products.remove(produto);
-                System.out.println("Produto removido com sucesso.");
-            }else{
-                System.out.println("Ainda há unidades em estoque, remova antes de deletar o produto.");
+        if(Sistema.products.size()==0){
+            System.out.println("Não há produtos cadastrados.");
+        }else{
+            Scanner scanner = new Scanner(System.in);
+    
+            System.out.println("Lista de Produtos:");
+            listarProdutos();
+    
+            System.out.print("Digite o ID do Produto para remover: ");
+            int id = scanner.nextInt();
+            Produto produto = encontrarProdutoPorId(id);
+    
+            //FAZER: PEDIR CONFIRMAÇÃO PARA REMOVER
+            if (produto != null) {
+                if(produto.getQtdEstoque() == 0){
+                    Sistema.products.remove(produto);
+                    System.out.println("Produto removido com sucesso.");
+                }else{
+                    System.out.println("Ainda há unidades em estoque, remova antes de deletar o produto.");
+                }
+            } else {
+                System.out.println("Produto não encontrado.");
             }
-        } else {
-            System.out.println("Produto não encontrado.");
         }
     }
 
+    public void editarProduto() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Lista de produtos: ");
+        listarProdutos();
+        
+        boolean IdExist;
+        int id, opcao;
+        do{
+            System.out.print("Digite o ID do produto a ser editado: ");
+            id = scanner.nextInt();
+            IdExist=false;
+            for(int i=0; i<Sistema.products.size();i++){
+                if(Sistema.products.get(i).getId()==id){
+                    IdExist=true;
+                    System.out.println("ID de produto já existente no sistema, insira outro id: ");
+                    break;
+                }
+            };
+        }while(IdExist);
+        scanner.nextLine(); 
+        
+        Produto produto = encontrarProdutoPorId(id);
+
+        //FAZER MOSTRAR PRODUTO
+        do {
+            System.out.println("\nInforme um campo a ser alterado:");
+            System.out.println("1. ID");
+            System.out.println("2. NOME");
+            System.out.println("3. CATEGORIA");
+            System.out.println("4. PREÇO DE VENDA");
+            System.out.println("5. CUSTO DE COMPRA");
+            System.out.println("6. ESTOQUE MÍNIMO DESEJADO");
+            System.out.println("7. CAPACIDADE MÁXIMA DE ESTOQUE");
+            System.out.println("8. FORNECEDOR");
+            System.out.println("0. Voltar");
+            System.out.print("Escolha uma opção: ");
+            opcao = scanner.nextInt();
+
+            //fazer poder cancelar?
+            //fazer n poder editar e colocar o mesmo nome?
+            switch (opcao) {
+                case 1:
+                    int novoID;
+                    do{
+                        System.out.print("Digite o novo ID do Produto: ");
+                        novoID = scanner.nextInt();
+                        IdExist=false;
+                        for(int i=0; i<Sistema.products.size();i++){
+                            if(Sistema.products.get(i).getId()==id){
+                                IdExist=true;
+                                System.out.println("ID de produto já existente no sistema, insira outro id: ");
+                                break;
+                            }
+                        };
+                    }while(IdExist);
+                    scanner.nextLine();
+
+                    produto.setID(novoID);
+                    break;
+                case 2:
+                    System.out.println("Informe o novo nome do produto: ");
+                    String novoNome = scanner.nextLine();
+                    produto.setNome(novoNome);
+                    break;
+                case 3:
+                    System.out.println("Informe a nova categoria do produto: ");
+                    String novaCat = scanner.nextLine();
+                    produto.setCategoria(novaCat);
+                    break;
+                case 4:
+                    System.out.println("Informe o novo preço de venda do produto: ");
+                    Double novoPreco = scanner.nextDouble();
+                    scanner.nextLine();
+                    produto.setPrice(novoPreco);
+                    break;
+                case 5:
+                    System.out.println("Informe o novo custo de compra do produto: ");
+                    Double novoCost = scanner.nextDouble();
+                    scanner.nextLine();
+                    produto.setCost(novoCost);
+                    break;
+                case 6:
+                    System.out.println("Informe o novo estoque mínimo desejado do produto: ");
+                    int novoMinCapacity = scanner.nextInt();
+                    scanner.nextLine();
+                    produto.setMinCapacity(novoMinCapacity);
+                    break;
+                case 7:
+                    System.out.println("Informe a nova capacidade máxima de estoque do produto: ");
+                    int novoMaxCapacity = scanner.nextInt();
+                    scanner.nextLine();
+                    produto.setMaxCapacity(novoMaxCapacity);
+                    break;
+                case 8:
+                    int novoFornecedorID;
+                    System.out.print("Digite o novo ID de fornecedor: ");
+                    novoFornecedorID = scanner.nextInt();
+                    scanner.nextLine();
+                    Fornecedor novoFornecedor = encontrarFornecedorPorId(novoFornecedorID);
+                    if(novoFornecedor!=null){
+                        produto.setFornecedor(novoFornecedor);
+                    }else{
+                        System.out.println("Fornecedor não encontrado.");
+                    }
+                    break;
+                case 0:
+                    System.out.println("Voltando.");
+                    break;
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+        } while (opcao != 0);
+    }
+    // ARRUMAR OQ APARECE
     public void listarProdutos() {
         for(int i=0; i<Sistema.products.size();i++){
             Produto produto = Sistema.products.get(i);
@@ -241,5 +361,42 @@ public class Gerente extends Usuario {
             }
         }
         return null;
+    }
+
+    public void consultarProduto(){
+        Scanner scanner = new Scanner(System.in);
+        int opcao;
+
+        do {
+            System.out.println("\nOpções:");
+            System.out.println("1. Consultar todos os produtos");
+            System.out.println("2. Consultar produto pelo ID");
+            System.out.println("0. Voltar");
+            System.out.print("Escolha uma opção: ");
+            opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    listarProdutos();
+                    break;
+                case 2:
+                    System.out.print("Digite o ID do Produto: ");
+                    int id = scanner.nextInt();
+                    Produto produto = encontrarProdutoPorId(id);
+            
+                    //FAZER: PEDIR CONFIRMAÇÃO PARA REMOVER
+                    if (produto != null) {
+                        produto.mostrarProduto();
+                    } else {
+                        System.out.println("Produto não encontrado.");
+                    }
+                    break;
+                case 0:
+                    System.out.println("Voltar.");
+                    break;
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+        } while (opcao != 0);
     }
 }

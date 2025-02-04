@@ -16,6 +16,7 @@ public class Gerente extends Usuario {
         this.permissao = permissao;
     }
 
+    //FAZER OPCAO CONDIZENTE COM PERMISSÃO (SE N TIVER PERMISSÃO 0, A OPÇÃO 1 É CADASTRAR PRODUTO...)
     public void exibirMenuGerente() {
         Scanner scanner = new Scanner(System.in);
         int opcao;
@@ -35,6 +36,7 @@ public class Gerente extends Usuario {
                 System.out.println("Registrar Entrada de Produto"); 
                 System.out.println("Registrar Saída de Produto");
             }
+            System.out.println("consultar produto");
             System.out.println("Gerar Relatório de Movimentações");
             System.out.println("Gerar Relatório de Estoque");
             System.out.println("Gerar Relatório de Sugestão de Compra");
@@ -64,8 +66,17 @@ public class Gerente extends Usuario {
                     }
                     break;
                 case 5:
+                    if(permissao[2]){
+                        entradaProduto();
+                    }
                     break;
                 case 6:
+                    if(permissao[2]){
+                        saidaProduto();
+                    }
+                    break;
+                case 7:
+                    consultarProduto();
                     break;
                 case 0:
                     System.out.println("Saindo do sistema.");
@@ -148,6 +159,7 @@ public class Gerente extends Usuario {
         return null;
     }
 
+    //PRA FAZER - N DEIXAR CADASTRAR COM FORNECEDOR VAZIO (ID Q N TEM FORNECEDOR)
     public void cadastrarProduto(){
         Scanner scanner = new Scanner(System.in);
         boolean IdExist;
@@ -191,7 +203,6 @@ public class Gerente extends Usuario {
         int maxCapacity = scanner.nextInt();
         scanner.nextLine();
 
-        //PRA FAZER - N DEIXAR CADASTRAR COM FORNECEDOR VAZIO (ID Q N TEM FORNECEDOR)
         System.out.print("Qual o fornecedor do produto: ");
         listarFornecedores();
         System.out.println("Selecione o ID do fornecedor:");
@@ -231,7 +242,8 @@ public class Gerente extends Usuario {
             }
         }
     }
-
+    //FAZER PODER CANCELAR DEPOIS DE ESCOLHER EDITAR
+    //SE PUDER CANCELAR, FAZER PEDIR DENOVO SE PRODUTO NÃO EXISTIR
     public void editarProduto() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Lista de produtos: ");
@@ -398,5 +410,100 @@ public class Gerente extends Usuario {
                     System.out.println("Opção inválida. Tente novamente.");
             }
         } while (opcao != 0);
+    }
+    //fazer poder cancelar
+    //tem q testar
+    public void entradaProduto(){
+        Scanner scanner = new Scanner(System.in);
+
+        boolean IdExist;
+        int id;
+        do{
+            System.out.print("Informe o ID do produto: ");
+            id = scanner.nextInt();
+            IdExist=false;
+            for(int i=0; i<Sistema.products.size();i++){
+                if(Sistema.products.get(i).getId()==id){
+                    IdExist=true;
+                    break;
+                }
+            };
+            if(!IdExist){
+                System.out.println("Não há produto com esse ID cadastrados, insira outro ID: ");
+            }
+        }while(!IdExist);
+        scanner.nextLine(); 
+        Produto produto = encontrarProdutoPorId(id);
+
+        boolean validqtde;
+        int qtde;
+        do{
+            System.out.println("Informe a quantidade a ser adicionada ao estoque:");
+            qtde = scanner.nextInt();
+            scanner.nextLine();
+            if(qtde+produto.getQtdEstoque()>produto.getMaxCapacity()){
+                validqtde = false;
+                int maxEntrada = produto.getMaxCapacity() - produto.getQtdEstoque();
+                System.out.println("A quantidade informada excede a capacidade máxima de estoque. O valor máximo para isso não ocorrer é "+ maxEntrada);
+            } else {
+                validqtde = true;
+            }
+        }while (!validqtde);
+        
+        Movimentacao mov = Sistema.movimentacoes.get(Sistema.movimentacoes.size()-1);
+        Movimentacao movimentacao = new Movimentacao("entrada", qtde, produto, this, mov.getId());
+    }
+    //fazer poder cancelar
+    //tem que testar
+    public void saidaProduto(){
+        Scanner scanner = new Scanner(System.in);
+
+        boolean IdExist;
+        int id;
+        do{
+            System.out.print("Informe o ID do produto: ");
+            id = scanner.nextInt();
+            IdExist=false;
+            for(int i=0; i<Sistema.products.size();i++){
+                if(Sistema.products.get(i).getId()==id){
+                    IdExist=true;
+                    break;
+                }
+            };
+            if(!IdExist){
+                System.out.println("Não há produto com esse ID cadastrados, insira outro ID: ");
+            }
+        }while(!IdExist);
+        scanner.nextLine(); 
+        Produto produto = encontrarProdutoPorId(id);
+
+        boolean validqtde;
+        int qtde;
+        do{
+            System.out.println("Informe a quantidade a ser removida do estoque:");
+            qtde = scanner.nextInt();
+            scanner.nextLine();
+            if(qtde>produto.getQtdEstoque()){
+                validqtde = false;
+                int maxEntrada = produto.getQtdEstoque();
+                System.out.println("Há apenas "+ maxEntrada + " deste produto em estoque. Informe um valor menor: ");
+            } else {
+                if(produto.getQtdEstoque()-qtde<produto.getMinCapacity()){
+                    System.out.println("A quantidade em estoque será menor que a quantidade mínima desejada. Deseja proceguir (s/n)?");
+                    char op = scanner.next().charAt(0);
+                    scanner.nextLine();
+                    if(op == 's'){
+                        validqtde = true;
+                    } else {
+                        validqtde = false;
+                    }
+                } else {
+                    validqtde = true;
+                }
+            }
+        }while (!validqtde);
+        
+        Movimentacao mov = Sistema.movimentacoes.get(Sistema.movimentacoes.size()-1);
+        Movimentacao movimentacao = new Movimentacao("saida", qtde, produto, this, mov.getId());
     }
 }

@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Sistema {
 
     static ArrayList<Usuario> users;
-    private ArrayList<Movimentacao> movimentacoes;
+    static ArrayList<Movimentacao> movimentacoes;
     static ArrayList<Produto> products;
     static ArrayList<Fornecedor> fornecedores;
 

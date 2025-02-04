@@ -33,6 +33,14 @@ public class Produto {
         return qtdEstoque;
     }
 
+    public int getMaxCapacity(){
+        return maxCapacity;
+    }
+
+    public int getMinCapacity(){
+        return minCapacity;
+    }
+
     public void setID(int id){
         this.ID = id;
     }

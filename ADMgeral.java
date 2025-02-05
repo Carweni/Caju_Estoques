@@ -6,6 +6,7 @@ public class ADMgeral extends Usuario {
         super(nome, id, cargo, senha);
     }
 
+    // ver se listar usuarios como opção tem que mudar la no documento
     public void exibirMenuAdmGeral() {
         Scanner scanner = new Scanner(System.in);
         int opcao;
@@ -46,6 +47,7 @@ public class ADMgeral extends Usuario {
         } while (opcao != 0);
     }
 
+    // aqui falta só guardar as informções de usuário e deixar bonito
     private void cadastrarUsuarioGerente() {
         Scanner scanner = new Scanner(System.in);
         boolean IdExist;
@@ -62,6 +64,7 @@ public class ADMgeral extends Usuario {
         System.out.print("Digite o cargo do Usuário Gerente: ");
         String cargo = scanner.nextLine();
 
+        // Verifica se id de usuário já existe no sistema.
         int id;
         do{
             System.out.print("Digite o ID do Usuário Gerente: ");
@@ -114,6 +117,7 @@ public class ADMgeral extends Usuario {
         System.out.println("Usuário Gerente cadastrado com sucesso.");
     }
 
+    // aqui falta listar bonito os users e dependendo de se a gente deixar assim a maneira de alterar temos q reformular no docs
     private void alterarPermissoesUsuario() {
         Scanner scanner = new Scanner(System.in);
 
@@ -163,6 +167,7 @@ public class ADMgeral extends Usuario {
         }
     }
 
+    //  tem q fazer o adm confirmar, deixar bonito e adicionar no docs q o adm n pode remover ele mesmo
     private void removerUsuario() {
         Scanner scanner = new Scanner(System.in);
 
@@ -209,7 +214,8 @@ public class ADMgeral extends Usuario {
         }
     }
     
-    public void alterarInfos() {
+    // ver se vamos deixar isso mesmo e adicionar la no docs ou só deixar assim, ou apagar
+    public void alterarInfos() {    
         Scanner scanner = new Scanner(System.in);
         int opcao;
 

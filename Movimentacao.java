@@ -18,5 +18,4 @@ public class Movimentacao {
     public int getId(){
         return ID;
     }
-
 }

@@ -86,7 +86,7 @@ public class Gerente extends Usuario {
             }
         } while (opcao != 0);
     }
-
+    //FALTA ARMAZENAR INFOS
     public void cadastrarFornecedor(){
         Scanner scanner = new Scanner(System.in);
         boolean IdExist;
@@ -141,7 +141,7 @@ public class Gerente extends Usuario {
             }
         }
     }
-
+    // FAZER LISTAR BONITO
     public void listarFornecedores() {
         for(int i=0; i<Sistema.fornecedores.size();i++){
             Fornecedor fornecedor = Sistema.fornecedores.get(i);
@@ -159,7 +159,8 @@ public class Gerente extends Usuario {
         return null;
     }
 
-    //PRA FAZER - N DEIXAR CADASTRAR COM FORNECEDOR VAZIO (ID Q N TEM FORNECEDOR)
+    //PRA FAZER - N DEIXAR CADASTRAR COM FORNECEDOR VAZIO (ID Q N TEM FORNECEDOR) adicionar no docs?
+    //ARMAZENAR INFOS
     public void cadastrarProduto(){
         Scanner scanner = new Scanner(System.in);
         boolean IdExist;
@@ -216,6 +217,7 @@ public class Gerente extends Usuario {
         System.out.println("Produto cadastrado com sucesso.");
     }
     
+    // FALTA A MENSAGEM DE CONFIRMAÇÃO
     private void removerProduto() {
         if(Sistema.products.size()==0){
             System.out.println("Não há produtos cadastrados.");
@@ -375,6 +377,7 @@ public class Gerente extends Usuario {
         return null;
     }
 
+    //VE COMO VAI FAZER A BUSCA A PARTIR DE QUALQUER UM DOS ELEMENTOS OU TIRAR ISSO DO DOCS
     public void consultarProduto(){
         Scanner scanner = new Scanner(System.in);
         int opcao;

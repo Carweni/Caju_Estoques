@@ -1,7 +1,7 @@
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
-//PRA FAZER: se escrever no menu algo q n é numero, quebra - concertar
 public class Sistema {
 
     static ArrayList<Usuario> users;
@@ -20,38 +20,40 @@ public class Sistema {
         Sistema sistema = new Sistema();
 
         Usuario admGeral = new ADMgeral("admin", 1, "administrador geral", "123");
-
         users.add(admGeral);
 
         Scanner scanner = new Scanner(System.in);
-
-        int opcao;
+        int opcao = -1;
 
         do {
-            System.out.println("\nInício:");
-            System.out.println("1. Entrar");
-            System.out.println("0. Sair");
-            System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
+            try {
+                System.out.println("\nInício:");
+                System.out.println("1. Entrar");
+                System.out.println("0. Sair");
+                System.out.print("Escolha uma opção: ");
+                opcao = scanner.nextInt();
+                scanner.nextLine(); 
 
-            switch (opcao) {
-                case 1:
-                    Login(sistema);
-                    break;
-                case 0:
-                    System.out.println("Saindo do sistema.");
-                    break;
-                default:
-                    System.out.println("Opção inválida. Tente novamente.");
+                switch (opcao) {
+                    case 1:
+                        Login(sistema, scanner);
+                        break;
+                    case 0:
+                        System.out.println("Saindo do sistema.");
+                        break;
+                    default:
+                        System.out.println("Opção inválida. Tente novamente.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine();
             }
         } while (opcao != 0);
-    
+
         scanner.close();
     }
-    //NO DOCS ELE PEDE ID E NÃO NOME                
-    public static void Login(Sistema sistema){
-        Scanner scanner = new Scanner(System.in);
 
+    public static void Login(Sistema sistema, Scanner scanner) {
         System.out.println("Digite o nome de usuário: ");
         String nomeUsuario = scanner.nextLine();
 
@@ -68,36 +70,21 @@ public class Sistema {
 
         if (usuarioAutenticado != null) {
             System.out.println("Login bem-sucedido!");
-            sistema.exibirMenu(usuarioAutenticado);
+            sistema.exibirMenu(usuarioAutenticado, scanner);
         } else {
             System.out.println("Credenciais inválidas. Tente novamente.");
         }
     }
 
-    public void exibirMenu(Usuario usuario) {
-        Scanner scanner = new Scanner(System.in);
-
+    public void exibirMenu(Usuario usuario, Scanner scanner) {
         if (usuario instanceof ADMgeral) {
             ADMgeral admGeral = (ADMgeral) usuario;
-            admGeral.exibirMenuAdmGeral();
+            admGeral.exibirMenuAdmGeral(scanner);
         } else if (usuario instanceof Gerente) {
             Gerente gerente = (Gerente) usuario;
-            gerente.exibirMenuGerente();
-            //exibirMenuUsuario(usuario);
+            gerente.exibirMenuGerente(scanner);
         } else {
             System.out.println("Tipo de usuário inválido.");
         }
-    }
-
-    private void exibirMenuUsuario(Usuario usuario) {
-        Scanner scanner = new Scanner(System.in);
-        int opcao;
-
-        do {
-            System.out.println("\nMenu:");
-            System.out.println("0. Sair");
-            System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
-        } while (opcao != 0);
     }
 }

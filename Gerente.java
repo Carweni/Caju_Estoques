@@ -16,67 +16,97 @@ public class Gerente extends Usuario {
         this.permissao = permissao;
     }
 
-    //FAZER OPCAO CONDIZENTE COM PERMISSÃO (SE N TIVER PERMISSÃO 0, A OPÇÃO 1 É CADASTRAR PRODUTO...)
-    public void exibirMenuGerente() {
-        Scanner scanner = new Scanner(System.in);
-        int opcao;
-        
-        do {
-            System.out.println("\nMenu:");
-            if(this.permissao[0]){
-                System.out.println( "1. Cadastrar Fornecedor");
-                System.out.println("2. Remover Fornecedor");
-            }
-            if(this.permissao[1]){
-                System.out.println("3. Cadastrar Produto"); 
-                System.out.println("4. Editar Produto"); 
-                System.out.println("5. Remover Produto"); 
-            }
-            if(this.permissao[2]){
-                System.out.println("Registrar Entrada de Produto"); 
-                System.out.println("Registrar Saída de Produto");
-            }
-            System.out.println("consultar produto");
-            System.out.println("Gerar Relatório de Movimentações");
-            System.out.println("Gerar Relatório de Estoque");
-            System.out.println("Gerar Relatório de Sugestão de Compra");
-            System.out.println("0. Sair");
-            System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
+    public void exibirMenuGerente(Scanner scanner) {
+    int opcao = -1;
+    
+    do {
+        System.out.println("\nMenu:");
+        int contadorOpcoes = 1; 
 
-            switch (opcao) {
+        if (this.permissao[0]) {
+            System.out.println(contadorOpcoes + ". Cadastrar Fornecedor");
+            contadorOpcoes++;
+            System.out.println(contadorOpcoes + ". Remover Fornecedor");
+            contadorOpcoes++;
+        }
+        if (this.permissao[1]) {
+            System.out.println(contadorOpcoes + ". Cadastrar Produto");
+            contadorOpcoes++;
+            System.out.println(contadorOpcoes + ". Editar Produto");
+            contadorOpcoes++;
+            System.out.println(contadorOpcoes + ". Remover Produto");
+            contadorOpcoes++;
+        }
+        if (this.permissao[2]) {
+            System.out.println(contadorOpcoes + ". Registrar Entrada de Produto");
+            contadorOpcoes++;
+            System.out.println(contadorOpcoes + ". Registrar Saída de Produto");
+            contadorOpcoes++;
+        }
+        System.out.println(contadorOpcoes + ". Consultar produto");
+        contadorOpcoes++;
+        System.out.println(contadorOpcoes + ". Gerar Relatório de Movimentações");
+        contadorOpcoes++;
+        System.out.println(contadorOpcoes + ". Gerar Relatório de Estoque");
+        contadorOpcoes++;
+        System.out.println(contadorOpcoes + ". Gerar Relatório de Sugestão de Compra");
+        contadorOpcoes++;
+        System.out.println("0. Sair");
+        System.out.print("Escolha uma opção: ");
+
+        try {
+            opcao = scanner.nextInt();
+            scanner.nextLine(); 
+
+            int opcaoMapeada = 0;
+            if (opcao != 0) {
+                if (this.permissao[0] && opcao <= 2) {
+                    opcaoMapeada = opcao;
+                } else if (this.permissao[1] && opcao <= 5) {
+                    opcaoMapeada = opcao + 2;
+                } else if (this.permissao[2] && opcao <= 7) {
+                    opcaoMapeada = opcao + 5;
+                } else if (opcao <= 11) {
+                    opcaoMapeada = opcao + 7;
+                } else {
+                    System.out.println("Opção inválida. Tente novamente.");
+                    continue;
+                }
+            }
+
+            switch (opcaoMapeada) {
                 case 1:
-                    if(permissao[0]){
-                        cadastrarFornecedor();
-                    }
+                    cadastrarFornecedor();
                     break;
                 case 2:
-                    if(permissao[0]){
-                        removerFornecedor();
-                    }
+                    removerFornecedor();
                     break;
                 case 3:
-                    if(permissao[1]){
-                        cadastrarProduto();
-                    }
+                    cadastrarProduto();
                     break;
                 case 4:
-                    if(permissao[1]){
-                        removerProduto();
-                    }
+                    editarProduto();
                     break;
                 case 5:
-                    if(permissao[2]){
-                        entradaProduto();
-                    }
+                    removerProduto();
                     break;
                 case 6:
-                    if(permissao[2]){
-                        saidaProduto();
-                    }
+                    entradaProduto();
                     break;
                 case 7:
+                    saidaProduto();
+                    break;
+                case 8:
                     consultarProduto();
+                    break;
+                case 9:
+                    //gerarRelatorioMovimentacoes();
+                    break;
+                case 10:
+                    //gerarRelatorioEstoque();
+                    break;
+                case 11:
+                    //gerarRelatorioSugestaoCompra();
                     break;
                 case 0:
                     System.out.println("Saindo do sistema.");
@@ -84,8 +114,12 @@ public class Gerente extends Usuario {
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
-        } while (opcao != 0);
-    }
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("Entrada inválida. Por favor, digite um número.");
+            scanner.nextLine(); 
+        }
+    } while (opcao != 0);
+}
     //FALTA ARMAZENAR INFOS
     public void cadastrarFornecedor(){
         Scanner scanner = new Scanner(System.in);
@@ -159,7 +193,6 @@ public class Gerente extends Usuario {
         return null;
     }
 
-    //PRA FAZER - N DEIXAR CADASTRAR COM FORNECEDOR VAZIO (ID Q N TEM FORNECEDOR) adicionar no docs?
     //ARMAZENAR INFOS
     public void cadastrarProduto(){
         Scanner scanner = new Scanner(System.in);

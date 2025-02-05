@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ADMgeral extends Usuario {
@@ -7,11 +8,11 @@ public class ADMgeral extends Usuario {
     }
 
     // ver se listar usuarios como opção tem que mudar la no documento
-    public void exibirMenuAdmGeral() {
-        Scanner scanner = new Scanner(System.in);
-        int opcao;
+    public void exibirMenuAdmGeral(Scanner scanner) {
+    int opcao = -1;
 
-        do {
+    do {
+        try {
             System.out.println("\nMenu:");
             System.out.println("1. Cadastrar Usuário Gerente");
             System.out.println("2. Alterar Permissões de Usuário");
@@ -21,6 +22,7 @@ public class ADMgeral extends Usuario {
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
+            scanner.nextLine(); 
 
             switch (opcao) {
                 case 1:
@@ -39,13 +41,18 @@ public class ADMgeral extends Usuario {
                     alterarInfos();
                     break;
                 case 0:
-                    System.out.println("Saindo do sistema.");
+                    System.out.println("Saindo do menu de administração.");
                     break;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
-        } while (opcao != 0);
-    }
+        } catch (InputMismatchException e) {
+            System.out.println("Entrada inválida! Digite um número válido.");
+            scanner.nextLine(); 
+        }
+    } while (opcao != 0);
+}
+
 
     // aqui falta só guardar as informções de usuário e deixar bonito
     private void cadastrarUsuarioGerente() {

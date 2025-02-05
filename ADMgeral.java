@@ -32,7 +32,7 @@ public class ADMgeral extends Usuario {
                     alterarPermissoesUsuario();
                     break;
                 case 3:
-                    removerUsuario();
+                    removerUsuario(scanner);
                     break;
                 case 4:
                     listarUsers();
@@ -52,7 +52,6 @@ public class ADMgeral extends Usuario {
         }
     } while (opcao != 0);
 }
-
 
     // aqui falta só guardar as informções de usuário e deixar bonito
     private void cadastrarUsuarioGerente() {
@@ -120,11 +119,11 @@ public class ADMgeral extends Usuario {
 
         Gerente novoGerente = new Gerente(nome, id, cargo, senha, permission);
         Sistema.users.add(novoGerente);
+        Sistema.salvarUsuarios();
 
         System.out.println("Usuário Gerente cadastrado com sucesso.");
     }
 
-    // aqui falta listar bonito os users e dependendo de se a gente deixar assim a maneira de alterar temos q reformular no docs
     private void alterarPermissoesUsuario() {
         Scanner scanner = new Scanner(System.in);
 
@@ -169,15 +168,13 @@ public class ADMgeral extends Usuario {
             }
 
             ((Gerente)usuario).setPermissao(permission);
+            Sistema.salvarUsuarios();
         } else {
             System.out.println("Usuário não encontrado ou não é um gerente.");
         }
     }
 
-    //  tem q fazer o adm confirmar, deixar bonito e adicionar no docs q o adm n pode remover ele mesmo
-    private void removerUsuario() {
-        Scanner scanner = new Scanner(System.in);
-
+    private void removerUsuario(Scanner scanner) {
         System.out.println("Lista de Usuários:");
         listarUsers();
 
@@ -189,8 +186,17 @@ public class ADMgeral extends Usuario {
             if(usuario.getId() == 1){
                 System.out.println("Administrador não pode ser removido.");
             } else {
-                Sistema.users.remove(usuario);
-                System.out.println("Usuário removido com sucesso.");
+                System.out.println("Você deseja confirmar a remoção de " + usuario.getNome() + "? (s/n)");
+                char confirmacao = scanner.next().charAt(0);
+                
+                if (confirmacao == 's' || confirmacao == 'S'){
+                    Sistema.users.remove(usuario);
+                    Sistema.salvarUsuarios();
+                    System.out.println("Usuário removido com sucesso.");
+                }else{
+                    System.out.println("Operação cancelada.");
+                }
+                
             }
         } else {
             System.out.println("Usuário não encontrado.");
@@ -206,7 +212,6 @@ public class ADMgeral extends Usuario {
         return null;
     }
 
-    //PRA FAZER: ARRUMAR BONITINHO O QUE IMPRIME NA TELA
     public void listarUsers() {
         for(int i=0; i<Sistema.users.size();i++){
             Usuario usuario = Sistema.users.get(i);
@@ -214,10 +219,28 @@ public class ADMgeral extends Usuario {
             System.out.println(usuario.getNome());
             if(usuario instanceof Gerente) {
                 Gerente usuarioG = (Gerente) usuario;
-                System.out.print(usuarioG.getPermissao()[0]);
-                System.out.print(usuarioG.getPermissao()[1]);
-                System.out.println(usuarioG.getPermissao()[2]);
+                System.out.print("Permissão para cadastrar/remover fornecedores: ");
+                if(usuarioG.getPermissao()[0]){
+                    System.out.println("Sim");
+                }else{
+                    System.out.println("Não");
+                }
+
+                System.out.print("Permissão para cadastrar/remover produtos: ");
+                if(usuarioG.getPermissao()[1]){
+                    System.out.println("Sim");
+                }else{
+                    System.out.println("Não");
+                }
+
+                System.out.print("Permissão para registrar entrada e saída produtos: ");
+                if(usuarioG.getPermissao()[2]){
+                    System.out.println("Sim");
+                }else{
+                    System.out.println("Não");
+                }
             }
+            System.out.println();
         }
     }
     

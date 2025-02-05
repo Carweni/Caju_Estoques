@@ -1,3 +1,9 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -8,6 +14,7 @@ public class Sistema {
     static ArrayList<Movimentacao> movimentacoes;
     static ArrayList<Produto> products;
     static ArrayList<Fornecedor> fornecedores;
+    static final String FILE_NAME = "usuarios.dat";
 
     public Sistema() {
         users = new ArrayList<>();
@@ -19,8 +26,15 @@ public class Sistema {
     public static void main(String[] args) {
         Sistema sistema = new Sistema();
 
-        Usuario admGeral = new ADMgeral("admin", 1, "administrador geral", "123");
-        users.add(admGeral);
+        // Carregar usuários do arquivo ao iniciar o sistema
+        users = carregarUsuarios();
+
+        // Se não houver usuários no arquivo, adicionar o administrador geral
+        if (users.isEmpty()) {
+            Usuario admGeral = new ADMgeral("admin", 1, "administrador geral", "123");
+            users.add(admGeral);
+            salvarUsuarios(); // Salvar o administrador geral no arquivo
+        }
 
         Scanner scanner = new Scanner(System.in);
         int opcao = -1;
@@ -85,6 +99,27 @@ public class Sistema {
             gerente.exibirMenuGerente(scanner);
         } else {
             System.out.println("Tipo de usuário inválido.");
+        }
+    }
+
+    public static void salvarUsuarios() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+            oos.writeObject(users);
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar usuários: " + e.getMessage());
+        }
+    }
+
+    public static ArrayList<Usuario> carregarUsuarios() {
+        File arquivo = new File(FILE_NAME);
+        if (!arquivo.exists()) {
+            return new ArrayList<>();
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arquivo))) {
+            return (ArrayList<Usuario>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Erro ao carregar usuários: " + e.getMessage());
+            return new ArrayList<>();
         }
     }
 }

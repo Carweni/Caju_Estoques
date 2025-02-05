@@ -26,10 +26,10 @@ public class ADMgeral extends Usuario {
 
             switch (opcao) {
                 case 1:
-                    cadastrarUsuarioGerente();
+                    cadastrarUsuarioGerente(scanner);
                     break;
                 case 2:
-                    alterarPermissoesUsuario();
+                    alterarPermissoesUsuario(scanner);
                     break;
                 case 3:
                     removerUsuario(scanner);
@@ -38,7 +38,7 @@ public class ADMgeral extends Usuario {
                     listarUsers();
                     break;
                 case 5:
-                    alterarInfos();
+                    alterarInfos(scanner);
                     break;
                 case 0:
                     System.out.println("Saindo do menu de administração.");
@@ -55,8 +55,7 @@ public class ADMgeral extends Usuario {
 
     // deixar bonito
     // tem q try catch os int e outros
-    private void cadastrarUsuarioGerente() {
-        Scanner scanner = new Scanner(System.in);
+    private void cadastrarUsuarioGerente(Scanner scanner) {
         boolean IdExist;
         boolean[] permission = new boolean[3];
         for (int i = 0; i < permission.length; i++) {
@@ -125,9 +124,7 @@ public class ADMgeral extends Usuario {
         System.out.println("Usuário Gerente cadastrado com sucesso.");
     }
 
-    private void alterarPermissoesUsuario() {
-        Scanner scanner = new Scanner(System.in);
-
+    private void alterarPermissoesUsuario(Scanner scanner) {
         System.out.println("Lista de Usuários:");
         listarUsers();
 
@@ -246,8 +243,7 @@ public class ADMgeral extends Usuario {
     }
     
     // ver se vamos deixar isso mesmo e adicionar la no docs ou só deixar assim, ou apagar
-    public void alterarInfos() {    
-        Scanner scanner = new Scanner(System.in);
+    public void alterarInfos(Scanner scanner) {  
         int opcao;
 
         do {

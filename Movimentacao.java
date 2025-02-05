@@ -1,4 +1,6 @@
-public class Movimentacao {
+import java.io.Serializable;
+
+public class Movimentacao implements Serializable{
     private String tipo;
     private int quantia;
     private Produto produto;
@@ -15,5 +17,21 @@ public class Movimentacao {
 
     public int getId(){
         return ID;
+    }
+
+    public String getTipo(){
+        return this.tipo;
+    }
+
+    public int getQuantia(){
+        return this.quantia;
+    }
+
+    public Produto getProduto(){
+        return this.produto;
+    }
+
+    public Gerente getGerente(){
+        return this.responsavel;
     }
 }

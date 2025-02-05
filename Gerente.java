@@ -60,13 +60,41 @@ public class Gerente extends Usuario {
 
             int opcaoMapeada = 0;
             if (opcao != 0) {
-                if (this.permissao[0] && opcao <= 2) {
+                if (this.permissao[0] && this.permissao[1] && this.permissao[2]) { //SSS
                     opcaoMapeada = opcao;
-                } else if (this.permissao[1] && opcao <= 5) {
-                    opcaoMapeada = opcao + 2;
-                } else if (this.permissao[2] && opcao <= 7) {
+                } else if (this.permissao[0] && !this.permissao[1]  && !this.permissao[2]) {  // SNN
+                    if(opcao <= 2){
+                        opcaoMapeada = opcao;
+                    }
+                    else{
+                        opcaoMapeada = opcao + 5;
+                    }
+                } else if (!this.permissao[0] && this.permissao[1]  && !this.permissao[2]) { // NSN
+                    if(opcao <= 3){
+                        opcaoMapeada = opcao + 2;
+                    }
+                    else{
+                        opcaoMapeada = opcao + 4;
+                    }
+                } else if (!this.permissao[0] && !this.permissao[1] && this.permissao[2]) { // NNS
                     opcaoMapeada = opcao + 5;
-                } else if (opcao <= 11) {
+                } else if (this.permissao[0] && !this.permissao[1]  && this.permissao[2]) { // SNS
+                    if(opcao <= 2 ){
+                        opcaoMapeada = opcao;
+                    }
+                    else{
+                        opcaoMapeada = opcao + 3;
+                    }
+                } else if (this.permissao[0] && this.permissao[1]  && !this.permissao[2]) { // SSN
+                    if(opcao < 6){
+                        opcaoMapeada = opcao;
+                    }
+                    else{
+                        opcaoMapeada = opcao + 2;
+                    }
+                } else if (!this.permissao[0] && this.permissao[1]  && this.permissao[2]) { // NSS
+                    opcaoMapeada = opcao + 2;
+                }else if (!this.permissao[0] && !this.permissao[1] && !this.permissao[2]) { // NNN
                     opcaoMapeada = opcao + 7;
                 } else {
                     System.out.println("Opção inválida. Tente novamente.");
@@ -79,25 +107,25 @@ public class Gerente extends Usuario {
                     cadastrarFornecedor(scanner);
                     break;
                 case 2:
-                    removerFornecedor();
+                    removerFornecedor(scanner);
                     break;
                 case 3:
-                    cadastrarProduto();
+                    cadastrarProduto(scanner);
                     break;
                 case 4:
-                    editarProduto();
+                    editarProduto(scanner);
                     break;
                 case 5:
-                    removerProduto();
+                    removerProduto(scanner);
                     break;
                 case 6:
-                    entradaProduto();
+                    entradaProduto(scanner);
                     break;
                 case 7:
-                    saidaProduto();
+                    saidaProduto(scanner);
                     break;
                 case 8:
-                    consultarProduto();
+                    consultarProduto(scanner);
                     break;
                 case 9:
                     //gerarRelatorioMovimentacoes();
@@ -158,11 +186,10 @@ public class Gerente extends Usuario {
         System.out.println("Fornecedor cadastrado com sucesso.");
     }
 
-    private void removerFornecedor() {
+    private void removerFornecedor(Scanner scanner) {
         if(Sistema.fornecedores.size()==0){
             System.out.println("Não há fornecedores registrados.");
         } else {
-            Scanner scanner = new Scanner(System.in);
 
             System.out.println("Lista de Fornecedores:");
             listarFornecedores();
@@ -191,7 +218,7 @@ public class Gerente extends Usuario {
     public void listarFornecedores() {
         for(int i=0; i<Sistema.fornecedores.size();i++){
             Fornecedor fornecedor = Sistema.fornecedores.get(i);
-            System.out.print(fornecedor.getId()+ "- ");
+            System.out.println(fornecedor.getId()+ " - ");
             System.out.println(fornecedor.getNome());
             System.out.println("Contato: " + fornecedor.getContato() + "\n");
         }
@@ -206,9 +233,7 @@ public class Gerente extends Usuario {
         return null;
     }
 
-    //ARMAZENAR INFOS
-    public void cadastrarProduto(){
-        Scanner scanner = new Scanner(System.in);
+    public void cadastrarProduto(Scanner scanner){
         boolean IdExist;
 
         System.out.println("\nCadastrar Produto:");
@@ -260,16 +285,14 @@ public class Gerente extends Usuario {
         Produto produto = new Produto(nome, id, categoria, price, cost, minCapacity, maxCapacity, fornecedor);
 
         Sistema.products.add(produto);
+        Sistema.salvarProdutos();
         System.out.println("Produto cadastrado com sucesso.");
     }
     
-    // FALTA A MENSAGEM DE CONFIRMAÇÃO
-    private void removerProduto() {
+    private void removerProduto(Scanner scanner) {
         if(Sistema.products.size()==0){
             System.out.println("Não há produtos cadastrados.");
         }else{
-            Scanner scanner = new Scanner(System.in);
-    
             System.out.println("Lista de Produtos:");
             listarProdutos();
     
@@ -277,11 +300,19 @@ public class Gerente extends Usuario {
             int id = scanner.nextInt();
             Produto produto = encontrarProdutoPorId(id);
     
-            //FAZER: PEDIR CONFIRMAÇÃO PARA REMOVER
             if (produto != null) {
                 if(produto.getQtdEstoque() == 0){
-                    Sistema.products.remove(produto);
-                    System.out.println("Produto removido com sucesso.");
+                    System.out.println("Deseja confirmar a remoção de " + produto.getNome() + "? (s/n)");
+                    char confirmacao = scanner.next().charAt(0);
+
+                    if(confirmacao == 's' || confirmacao == 'S'){
+                        Sistema.products.remove(produto);
+                        Sistema.salvarProdutos();
+                        System.out.println("Produto removido com sucesso.");
+                    }else{
+                        System.out.println("Operação de remoção cancelada. ");
+                    }
+                    
                 }else{
                     System.out.println("Ainda há unidades em estoque, remova antes de deletar o produto.");
                 }
@@ -292,118 +323,116 @@ public class Gerente extends Usuario {
     }
     //FAZER PODER CANCELAR DEPOIS DE ESCOLHER EDITAR
     //SE PUDER CANCELAR, FAZER PEDIR DENOVO SE PRODUTO NÃO EXISTIR
-    public void editarProduto() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Lista de produtos: ");
-        listarProdutos();
-        
-        boolean IdExist;
-        int id, opcao;
-        do{
-            System.out.print("Digite o ID do produto a ser editado: ");
-            id = scanner.nextInt();
-            IdExist=false;
-            for(int i=0; i<Sistema.products.size();i++){
-                if(Sistema.products.get(i).getId()==id){
-                    IdExist=true;
-                    System.out.println("ID de produto já existente no sistema, insira outro id: ");
-                    break;
-                }
-            };
-        }while(IdExist);
-        scanner.nextLine(); 
-        
-        Produto produto = encontrarProdutoPorId(id);
+    public void editarProduto(Scanner scanner) {
+        if(Sistema.products.size()==0){
+            System.out.println("Não há produtos cadastrados.");
+        }else{
+            System.out.println("Lista de produtos: ");
+            listarProdutos();
+            
+            System.out.print("Digite o ID do Produto para editar: ");
+            int id = scanner.nextInt();
+            Produto produto = encontrarProdutoPorId(id); 
 
-        //FAZER MOSTRAR PRODUTO
-        do {
-            System.out.println("\nInforme um campo a ser alterado:");
-            System.out.println("1. ID");
-            System.out.println("2. NOME");
-            System.out.println("3. CATEGORIA");
-            System.out.println("4. PREÇO DE VENDA");
-            System.out.println("5. CUSTO DE COMPRA");
-            System.out.println("6. ESTOQUE MÍNIMO DESEJADO");
-            System.out.println("7. CAPACIDADE MÁXIMA DE ESTOQUE");
-            System.out.println("8. FORNECEDOR");
-            System.out.println("0. Voltar");
-            System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
+            int opcao;
 
-            //fazer poder cancelar?
-            //fazer n poder editar e colocar o mesmo nome?
-            switch (opcao) {
-                case 1:
-                    int novoID;
-                    do{
-                        System.out.print("Digite o novo ID do Produto: ");
-                        novoID = scanner.nextInt();
-                        IdExist=false;
-                        for(int i=0; i<Sistema.products.size();i++){
-                            if(Sistema.products.get(i).getId()==id){
-                                IdExist=true;
-                                System.out.println("ID de produto já existente no sistema, insira outro id: ");
-                                break;
+            if(produto != null){
+                //FAZER MOSTRAR PRODUTO
+                do {
+                    System.out.println("\nInforme um campo a ser alterado:");
+                    System.out.println("1. ID");
+                    System.out.println("2. NOME");
+                    System.out.println("3. CATEGORIA");
+                    System.out.println("4. PREÇO DE VENDA");
+                    System.out.println("5. CUSTO DE COMPRA");
+                    System.out.println("6. ESTOQUE MÍNIMO DESEJADO");
+                    System.out.println("7. CAPACIDADE MÁXIMA DE ESTOQUE");
+                    System.out.println("8. FORNECEDOR");
+                    System.out.println("0. Voltar");
+                    System.out.print("Escolha uma opção: ");
+                    opcao = scanner.nextInt();
+
+                    //fazer poder cancelar?
+                    //fazer n poder editar e colocar o mesmo nome?
+                    switch (opcao) {
+                        case 1:
+                            int novoID;
+                            boolean IdExist;
+                            do{
+                                System.out.print("Digite o novo ID do Produto: ");
+                                novoID = scanner.nextInt();
+                                IdExist=false;
+                                for(int i=0; i<Sistema.products.size();i++){
+                                    if(Sistema.products.get(i).getId()==novoID){
+                                        IdExist=true;
+                                        System.out.println("ID de produto já existente no sistema, insira outro id: ");
+                                        break;
+                                    }
+                                };
+                            }while(IdExist);
+                            scanner.nextLine();
+
+                            produto.setID(novoID);
+                            System.out.println("O ID foi alterado com sucesso. ");
+                            break;
+                        case 2:
+                            System.out.println("Informe o novo nome do produto: ");
+                            String novoNome = scanner.nextLine();
+                            produto.setNome(novoNome);
+                            break;
+                        case 3:
+                            System.out.println("Informe a nova categoria do produto: ");
+                            String novaCat = scanner.nextLine();
+                            produto.setCategoria(novaCat);
+                            break;
+                        case 4:
+                            System.out.println("Informe o novo preço de venda do produto: ");
+                            Double novoPreco = scanner.nextDouble();
+                            scanner.nextLine();
+                            produto.setPrice(novoPreco);
+                            break;
+                        case 5:
+                            System.out.println("Informe o novo custo de compra do produto: ");
+                            Double novoCost = scanner.nextDouble();
+                            scanner.nextLine();
+                            produto.setCost(novoCost);
+                            break;
+                        case 6:
+                            System.out.println("Informe o novo estoque mínimo desejado do produto: ");
+                            int novoMinCapacity = scanner.nextInt();
+                            scanner.nextLine();
+                            produto.setMinCapacity(novoMinCapacity);
+                            break;
+                        case 7:
+                            System.out.println("Informe a nova capacidade máxima de estoque do produto: ");
+                            int novoMaxCapacity = scanner.nextInt();
+                            scanner.nextLine();
+                            produto.setMaxCapacity(novoMaxCapacity);
+                            break;
+                        case 8:
+                            int novoFornecedorID;
+                            System.out.print("Digite o novo ID de fornecedor: ");
+                            novoFornecedorID = scanner.nextInt();
+                            scanner.nextLine();
+                            Fornecedor novoFornecedor = encontrarFornecedorPorId(novoFornecedorID);
+                            if(novoFornecedor!=null){
+                                produto.setFornecedor(novoFornecedor);
+                            }else{
+                                System.out.println("Fornecedor não encontrado.");
                             }
-                        };
-                    }while(IdExist);
-                    scanner.nextLine();
-
-                    produto.setID(novoID);
-                    break;
-                case 2:
-                    System.out.println("Informe o novo nome do produto: ");
-                    String novoNome = scanner.nextLine();
-                    produto.setNome(novoNome);
-                    break;
-                case 3:
-                    System.out.println("Informe a nova categoria do produto: ");
-                    String novaCat = scanner.nextLine();
-                    produto.setCategoria(novaCat);
-                    break;
-                case 4:
-                    System.out.println("Informe o novo preço de venda do produto: ");
-                    Double novoPreco = scanner.nextDouble();
-                    scanner.nextLine();
-                    produto.setPrice(novoPreco);
-                    break;
-                case 5:
-                    System.out.println("Informe o novo custo de compra do produto: ");
-                    Double novoCost = scanner.nextDouble();
-                    scanner.nextLine();
-                    produto.setCost(novoCost);
-                    break;
-                case 6:
-                    System.out.println("Informe o novo estoque mínimo desejado do produto: ");
-                    int novoMinCapacity = scanner.nextInt();
-                    scanner.nextLine();
-                    produto.setMinCapacity(novoMinCapacity);
-                    break;
-                case 7:
-                    System.out.println("Informe a nova capacidade máxima de estoque do produto: ");
-                    int novoMaxCapacity = scanner.nextInt();
-                    scanner.nextLine();
-                    produto.setMaxCapacity(novoMaxCapacity);
-                    break;
-                case 8:
-                    int novoFornecedorID;
-                    System.out.print("Digite o novo ID de fornecedor: ");
-                    novoFornecedorID = scanner.nextInt();
-                    scanner.nextLine();
-                    Fornecedor novoFornecedor = encontrarFornecedorPorId(novoFornecedorID);
-                    if(novoFornecedor!=null){
-                        produto.setFornecedor(novoFornecedor);
-                    }else{
-                        System.out.println("Fornecedor não encontrado.");
+                            break;
+                        case 0:
+                            System.out.println("Voltando.");
+                            break;
+                        default:
+                            System.out.println("Opção inválida. Tente novamente.");
                     }
-                    break;
-                case 0:
-                    System.out.println("Voltando.");
-                    break;
-                default:
-                    System.out.println("Opção inválida. Tente novamente.");
+                } while (opcao != 0);
+                Sistema.salvarProdutos();
+            }else{
+                System.out.println("Produto não encontrado. ");
             }
-        } while (opcao != 0);
+        }
     }
     // ARRUMAR OQ APARECE
     public void listarProdutos() {
@@ -424,8 +453,7 @@ public class Gerente extends Usuario {
     }
 
     //VE COMO VAI FAZER A BUSCA A PARTIR DE QUALQUER UM DOS ELEMENTOS OU TIRAR ISSO DO DOCS
-    public void consultarProduto(){
-        Scanner scanner = new Scanner(System.in);
+    public void consultarProduto(Scanner scanner){
         int opcao;
 
         do {
@@ -465,9 +493,7 @@ public class Gerente extends Usuario {
     //tem q testar
     // listar produtos antes de pedir id
     // listar atributos do produto selecionado
-    public void entradaProduto() {
-        Scanner scanner = new Scanner(System.in);
-    
+    public void entradaProduto(Scanner scanner) {
         boolean IdExist;
         int id;
         do {
@@ -517,9 +543,7 @@ public class Gerente extends Usuario {
     //tem que testar
     // listar produtos antes de pedir id
     // listar atributos do produto selecionado
-    public void saidaProduto(){
-        Scanner scanner = new Scanner(System.in);
-
+    public void saidaProduto(Scanner scanner){
         boolean IdExist;
         int id;
         do{

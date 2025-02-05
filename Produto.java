@@ -1,4 +1,6 @@
-public class Produto {
+import java.io.Serializable;
+
+public class Produto implements Serializable {
     private String nome;
     private String categoria;
     private double price;
@@ -77,8 +79,10 @@ public class Produto {
         this.fornecedor=fornecedor;
     }
 
-    //fazer imprimir todos os atributos
     public void mostrarProduto(){
-        System.out.println(ID + ' ' + nome + ' ');
+        System.out.println("\n" + ID + " - " + nome + ": ");
+        System.out.println("Categoria: " + this.categoria + "\nCusto de Compra: R$" + this.cost + "\nPreço de Venda: R$" + this.price);
+        System.out.println("Quantia mínima recomendada: " + minCapacity + "\nCapacidade máxima: " + maxCapacity);
+        System.out.println("Quantidade atual em estoque: " + qtdEstoque + "\nFornecedor associado: " + fornecedor.getNome());
     }
 }

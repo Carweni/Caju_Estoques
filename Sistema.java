@@ -16,6 +16,8 @@ public class Sistema {
     static ArrayList<Fornecedor> fornecedores;
     static final String FILE_NAME_U = "usuarios.dat";
     static final String FILE_NAME_F = "fornecedores.dat";
+    static final String FILE_NAME_P = "produtos.dat";
+    static final String FILE_NAME_M = "movimentacoes.dat";
 
     public Sistema() {
         users = new ArrayList<>();
@@ -30,7 +32,8 @@ public class Sistema {
         // Carregar do arquivo ao iniciar o sistema:
         users = carregarUsuarios();
         fornecedores = carregarFornecedores(); 
-
+        products = carregarProdutos();
+        movimentacoes = carregarMovimentacoes();
 
         if (users.isEmpty()) {
             Usuario admGeral = new ADMgeral("admin", 1, "administrador geral", "123");
@@ -142,6 +145,48 @@ public class Sistema {
             return (ArrayList<Fornecedor>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Erro ao carregar fornecedores: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public static void salvarProdutos() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME_P))) {
+            oos.writeObject(products);
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar produtos: " + e.getMessage());
+        }
+    }
+
+    public static ArrayList<Produto> carregarProdutos() {
+        File arquivo = new File(FILE_NAME_P);
+        if (!arquivo.exists()) {
+            return new ArrayList<>();
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arquivo))) {
+            return (ArrayList<Produto>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Erro ao carregar produtos: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public static void salvarMovimentacoes() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME_M))) {
+            oos.writeObject(movimentacoes);
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar produtos: " + e.getMessage());
+        }
+    }
+
+    public static ArrayList<Movimentacao> carregarMovimentacoes() {
+        File arquivo = new File(FILE_NAME_M);
+        if (!arquivo.exists()) {
+            return new ArrayList<>();
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arquivo))) {
+            return (ArrayList<Movimentacao>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Erro ao carregar movimentações: " + e.getMessage());
             return new ArrayList<>();
         }
     }

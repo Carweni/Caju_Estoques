@@ -41,6 +41,10 @@ public class Produto {
         return minCapacity;
     }
 
+    public Fornecedor getFornecedor(){
+        return this.fornecedor;
+    }
+
     public void setID(int id){
         this.ID = id;
     }

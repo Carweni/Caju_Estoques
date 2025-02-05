@@ -76,7 +76,7 @@ public class Gerente extends Usuario {
 
             switch (opcaoMapeada) {
                 case 1:
-                    cadastrarFornecedor();
+                    cadastrarFornecedor(scanner);
                     break;
                 case 2:
                     removerFornecedor();
@@ -120,9 +120,8 @@ public class Gerente extends Usuario {
         }
     } while (opcao != 0);
 }
-    //FALTA ARMAZENAR INFOS
-    public void cadastrarFornecedor(){
-        Scanner scanner = new Scanner(System.in);
+
+    public void cadastrarFornecedor(Scanner scanner){
         boolean IdExist;
 
         System.out.println("\nCadastrar Fornecedor:");
@@ -132,8 +131,14 @@ public class Gerente extends Usuario {
 
         int id;
         do{
-            System.out.print("Digite o ID do Fornecedor: ");
-            id = scanner.nextInt();
+            do{
+                System.out.print("Digite o ID do Fornecedor: ");
+                id = scanner.nextInt();
+
+                if(id < 1){
+                    System.out.println("ID inválido. Insira outro número, positivo e diferente de 0. ");
+                }
+            }while(id <1);
             IdExist=false;
             for(int i=0; i<Sistema.fornecedores.size();i++){
                 if(Sistema.fornecedores.get(i).getId()==id){
@@ -149,11 +154,10 @@ public class Gerente extends Usuario {
         String contato = scanner.nextLine();
 
         Sistema.fornecedores.add(new Fornecedor(nome, id, contato));
+        Sistema.salvarFornecedores();
         System.out.println("Fornecedor cadastrado com sucesso.");
     }
 
-    // FAZER PRODUTO N RECEBER MAIS ENTRADAS SE FORNECEDOR N EXISTIR MAIS
-    // IDEIA : FAZER N PODER CADASTRAR COM ID 0 E DEIXAR COMO OPÇÃO PRA SÓ CANCELAR REMOÇÃO, N SEI
     private void removerFornecedor() {
         if(Sistema.fornecedores.size()==0){
             System.out.println("Não há fornecedores registrados.");
@@ -168,19 +172,28 @@ public class Gerente extends Usuario {
             Fornecedor fornecedor = encontrarFornecedorPorId(id);
     
             if (fornecedor != null) {
-                Sistema.fornecedores.remove(fornecedor);
-                System.out.println("Fornecedor removido com sucesso.");
+                System.out.println("Você deseja confirmar a remoção de " + fornecedor.getNome() + "? (s/n)");
+                char confirmacao = scanner.next().charAt(0);
+                
+                if (confirmacao == 's' || confirmacao == 'S'){
+                    Sistema.fornecedores.remove(fornecedor);
+                    Sistema.salvarFornecedores();
+                    System.out.println("Fornecedor removido com sucesso.");
+                }else{
+                    System.out.println("Operação cancelada.");
+                }
             } else {
                 System.out.println("Fornecedor não encontrado.");
             }
         }
     }
-    // FAZER LISTAR BONITO
+
     public void listarFornecedores() {
         for(int i=0; i<Sistema.fornecedores.size();i++){
             Fornecedor fornecedor = Sistema.fornecedores.get(i);
             System.out.print(fornecedor.getId()+ "- ");
             System.out.println(fornecedor.getNome());
+            System.out.println("Contato: " + fornecedor.getContato() + "\n");
         }
     }
 
@@ -449,46 +462,54 @@ public class Gerente extends Usuario {
     }
     //fazer poder cancelar
     //tem q testar
-    public void entradaProduto(){
+    public void entradaProduto() {
         Scanner scanner = new Scanner(System.in);
-
+    
         boolean IdExist;
         int id;
-        do{
+        do {
             System.out.print("Informe o ID do produto: ");
             id = scanner.nextInt();
-            IdExist=false;
-            for(int i=0; i<Sistema.products.size();i++){
-                if(Sistema.products.get(i).getId()==id){
-                    IdExist=true;
+            IdExist = false;
+            for (int i = 0; i < Sistema.products.size(); i++) {
+                if (Sistema.products.get(i).getId() == id) {
+                    IdExist = true;
                     break;
                 }
-            };
-            if(!IdExist){
+            }
+            if (!IdExist) {
                 System.out.println("Não há produto com esse ID cadastrados, insira outro ID: ");
             }
-        }while(!IdExist);
-        scanner.nextLine(); 
+        } while (!IdExist);
+        scanner.nextLine();
+    
         Produto produto = encontrarProdutoPorId(id);
-
+    
+        Fornecedor fornecedor = produto.getFornecedor();
+        if (!Sistema.fornecedores.contains(fornecedor)) {
+            System.out.println("O fornecedor deste produto foi removido. Não é possível registrar a entrada.");
+            return; 
+        }
+    
         boolean validqtde;
         int qtde;
-        do{
+        do {
             System.out.println("Informe a quantidade a ser adicionada ao estoque:");
             qtde = scanner.nextInt();
             scanner.nextLine();
-            if(qtde+produto.getQtdEstoque()>produto.getMaxCapacity()){
+            if (qtde + produto.getQtdEstoque() > produto.getMaxCapacity()) {
                 validqtde = false;
                 int maxEntrada = produto.getMaxCapacity() - produto.getQtdEstoque();
-                System.out.println("A quantidade informada excede a capacidade máxima de estoque. O valor máximo para isso não ocorrer é "+ maxEntrada);
+                System.out.println("A quantidade informada excede a capacidade máxima de estoque. O valor máximo para isso não ocorrer é " + maxEntrada);
             } else {
                 validqtde = true;
             }
-        }while (!validqtde);
-        
-        Movimentacao mov = Sistema.movimentacoes.get(Sistema.movimentacoes.size()-1);
+        } while (!validqtde);
+    
+        Movimentacao mov = Sistema.movimentacoes.get(Sistema.movimentacoes.size() - 1);
         Movimentacao movimentacao = new Movimentacao("entrada", qtde, produto, this, mov.getId());
     }
+    
     //fazer poder cancelar
     //tem que testar
     public void saidaProduto(){

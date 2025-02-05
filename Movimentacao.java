@@ -1,5 +1,3 @@
-import java.net.PortUnreachableException;
-
 public class Movimentacao {
     private String tipo;
     private int quantia;

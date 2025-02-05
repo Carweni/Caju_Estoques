@@ -14,7 +14,8 @@ public class Sistema {
     static ArrayList<Movimentacao> movimentacoes;
     static ArrayList<Produto> products;
     static ArrayList<Fornecedor> fornecedores;
-    static final String FILE_NAME = "usuarios.dat";
+    static final String FILE_NAME_U = "usuarios.dat";
+    static final String FILE_NAME_F = "fornecedores.dat";
 
     public Sistema() {
         users = new ArrayList<>();
@@ -26,14 +27,15 @@ public class Sistema {
     public static void main(String[] args) {
         Sistema sistema = new Sistema();
 
-        // Carregar usuários do arquivo ao iniciar o sistema
+        // Carregar do arquivo ao iniciar o sistema:
         users = carregarUsuarios();
+        fornecedores = carregarFornecedores(); 
 
-        // Se não houver usuários no arquivo, adicionar o administrador geral
+
         if (users.isEmpty()) {
             Usuario admGeral = new ADMgeral("admin", 1, "administrador geral", "123");
             users.add(admGeral);
-            salvarUsuarios(); // Salvar o administrador geral no arquivo
+            salvarUsuarios(); 
         }
 
         Scanner scanner = new Scanner(System.in);
@@ -103,7 +105,7 @@ public class Sistema {
     }
 
     public static void salvarUsuarios() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME_U))) {
             oos.writeObject(users);
         } catch (IOException e) {
             System.err.println("Erro ao salvar usuários: " + e.getMessage());
@@ -111,7 +113,7 @@ public class Sistema {
     }
 
     public static ArrayList<Usuario> carregarUsuarios() {
-        File arquivo = new File(FILE_NAME);
+        File arquivo = new File(FILE_NAME_U);
         if (!arquivo.exists()) {
             return new ArrayList<>();
         }
@@ -119,6 +121,27 @@ public class Sistema {
             return (ArrayList<Usuario>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Erro ao carregar usuários: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public static void salvarFornecedores() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME_F))) {
+            oos.writeObject(fornecedores);
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar fornecedores: " + e.getMessage());
+        }
+    }
+
+    public static ArrayList<Fornecedor> carregarFornecedores() {
+        File arquivo = new File(FILE_NAME_F);
+        if (!arquivo.exists()) {
+            return new ArrayList<>();
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arquivo))) {
+            return (ArrayList<Fornecedor>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Erro ao carregar fornecedores: " + e.getMessage());
             return new ArrayList<>();
         }
     }

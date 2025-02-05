@@ -1,4 +1,6 @@
-public class Fornecedor {
+import java.io.Serializable;
+
+public class Fornecedor implements Serializable{
     private String nome;
     private int id;
     private String contato;
@@ -15,6 +17,10 @@ public class Fornecedor {
 
     public String getNome(){
         return this.nome;
+    }
+
+    public String getContato(){
+        return this.contato;
     }
 }
 

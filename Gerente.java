@@ -460,8 +460,11 @@ public class Gerente extends Usuario {
             }
         } while (opcao != 0);
     }
+    
     //fazer poder cancelar
     //tem q testar
+    // listar produtos antes de pedir id
+    // listar atributos do produto selecionado
     public void entradaProduto() {
         Scanner scanner = new Scanner(System.in);
     
@@ -512,6 +515,8 @@ public class Gerente extends Usuario {
     
     //fazer poder cancelar
     //tem que testar
+    // listar produtos antes de pedir id
+    // listar atributos do produto selecionado
     public void saidaProduto(){
         Scanner scanner = new Scanner(System.in);
 

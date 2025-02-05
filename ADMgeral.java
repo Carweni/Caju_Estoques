@@ -53,7 +53,8 @@ public class ADMgeral extends Usuario {
     } while (opcao != 0);
 }
 
-    // aqui falta só guardar as informções de usuário e deixar bonito
+    // deixar bonito
+    // tem q try catch os int e outros
     private void cadastrarUsuarioGerente() {
         Scanner scanner = new Scanner(System.in);
         boolean IdExist;

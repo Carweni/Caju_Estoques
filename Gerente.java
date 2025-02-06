@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Gerente extends Usuario {
@@ -15,166 +16,172 @@ public class Gerente extends Usuario {
     public void setPermissao(boolean[] permissao) {
         this.permissao = permissao;
     }
-
-    public void exibirMenuGerente(Scanner scanner) {
-    int opcao = -1;
     
-    do {
-        System.out.println("\nMenu:");
-        int contadorOpcoes = 1; 
+    //testar todas as possibilidades de menu
+    public void exibirMenuGerente(Scanner scanner) {
+        int opcao = -1;
+        
+        do {
+            System.out.println("\nMenu:");
+            int contadorOpcoes = 1; 
 
-        if (this.permissao[0]) {
-            System.out.println(contadorOpcoes + ". Cadastrar Fornecedor");
+            if (this.permissao[0]) {
+                System.out.println(contadorOpcoes + ". Cadastrar Fornecedor");
+                contadorOpcoes++;
+                System.out.println(contadorOpcoes + ". Remover Fornecedor");
+                contadorOpcoes++;
+            }
+            if (this.permissao[1]) {
+                System.out.println(contadorOpcoes + ". Cadastrar Produto");
+                contadorOpcoes++;
+                System.out.println(contadorOpcoes + ". Editar Produto");
+                contadorOpcoes++;
+                System.out.println(contadorOpcoes + ". Remover Produto");
+                contadorOpcoes++;
+            }
+            if (this.permissao[2]) {
+                System.out.println(contadorOpcoes + ". Registrar Entrada de Produto");
+                contadorOpcoes++;
+                System.out.println(contadorOpcoes + ". Registrar Saída de Produto");
+                contadorOpcoes++;
+            }
+            System.out.println(contadorOpcoes + ". Consultar produto");
             contadorOpcoes++;
-            System.out.println(contadorOpcoes + ". Remover Fornecedor");
+            System.out.println(contadorOpcoes + ". Gerar Relatório de Movimentações");
             contadorOpcoes++;
-        }
-        if (this.permissao[1]) {
-            System.out.println(contadorOpcoes + ". Cadastrar Produto");
+            System.out.println(contadorOpcoes + ". Gerar Relatório de Estoque");
             contadorOpcoes++;
-            System.out.println(contadorOpcoes + ". Editar Produto");
+            System.out.println(contadorOpcoes + ". Gerar Relatório de Sugestão de Compra");
             contadorOpcoes++;
-            System.out.println(contadorOpcoes + ". Remover Produto");
-            contadorOpcoes++;
-        }
-        if (this.permissao[2]) {
-            System.out.println(contadorOpcoes + ". Registrar Entrada de Produto");
-            contadorOpcoes++;
-            System.out.println(contadorOpcoes + ". Registrar Saída de Produto");
-            contadorOpcoes++;
-        }
-        System.out.println(contadorOpcoes + ". Consultar produto");
-        contadorOpcoes++;
-        System.out.println(contadorOpcoes + ". Gerar Relatório de Movimentações");
-        contadorOpcoes++;
-        System.out.println(contadorOpcoes + ". Gerar Relatório de Estoque");
-        contadorOpcoes++;
-        System.out.println(contadorOpcoes + ". Gerar Relatório de Sugestão de Compra");
-        contadorOpcoes++;
-        System.out.println("0. Sair");
-        System.out.print("Escolha uma opção: ");
+            System.out.println("0. Sair");
+            System.out.print("Escolha uma opção: ");
 
-        try {
-            opcao = scanner.nextInt();
-            scanner.nextLine(); 
+            try {
+                opcao = scanner.nextInt();
+                scanner.nextLine(); 
 
-            int opcaoMapeada = 0;
-            if (opcao != 0) {
-                if (this.permissao[0] && this.permissao[1] && this.permissao[2]) { //SSS
-                    opcaoMapeada = opcao;
-                } else if (this.permissao[0] && !this.permissao[1]  && !this.permissao[2]) {  // SNN
-                    if(opcao <= 2){
+                int opcaoMapeada = 0;
+                if (opcao != 0) {
+                    if (this.permissao[0] && this.permissao[1] && this.permissao[2]) { //SSS
                         opcaoMapeada = opcao;
-                    }
-                    else{
+                    } else if (this.permissao[0] && !this.permissao[1]  && !this.permissao[2]) {  // SNN
+                        if(opcao <= 2){
+                            opcaoMapeada = opcao;
+                        }
+                        else{
+                            opcaoMapeada = opcao + 5;
+                        }
+                    } else if (!this.permissao[0] && this.permissao[1]  && !this.permissao[2]) { // NSN
+                        if(opcao <= 3){
+                            opcaoMapeada = opcao + 2;
+                        }
+                        else{
+                            opcaoMapeada = opcao + 4;
+                        }
+                    } else if (!this.permissao[0] && !this.permissao[1] && this.permissao[2]) { // NNS
                         opcaoMapeada = opcao + 5;
-                    }
-                } else if (!this.permissao[0] && this.permissao[1]  && !this.permissao[2]) { // NSN
-                    if(opcao <= 3){
+                    } else if (this.permissao[0] && !this.permissao[1]  && this.permissao[2]) { // SNS
+                        if(opcao <= 2 ){
+                            opcaoMapeada = opcao;
+                        }
+                        else{
+                            opcaoMapeada = opcao + 3;
+                        }
+                    } else if (this.permissao[0] && this.permissao[1]  && !this.permissao[2]) { // SSN
+                        if(opcao < 6){
+                            opcaoMapeada = opcao;
+                        }
+                        else{
+                            opcaoMapeada = opcao + 2;
+                        }
+                    } else if (!this.permissao[0] && this.permissao[1]  && this.permissao[2]) { // NSS
                         opcaoMapeada = opcao + 2;
+                    }else if (!this.permissao[0] && !this.permissao[1] && !this.permissao[2]) { // NNN
+                        opcaoMapeada = opcao + 7;
+                    } else {
+                        System.out.println("Opção inválida. Tente novamente.");
+                        continue;
                     }
-                    else{
-                        opcaoMapeada = opcao + 4;
-                    }
-                } else if (!this.permissao[0] && !this.permissao[1] && this.permissao[2]) { // NNS
-                    opcaoMapeada = opcao + 5;
-                } else if (this.permissao[0] && !this.permissao[1]  && this.permissao[2]) { // SNS
-                    if(opcao <= 2 ){
-                        opcaoMapeada = opcao;
-                    }
-                    else{
-                        opcaoMapeada = opcao + 3;
-                    }
-                } else if (this.permissao[0] && this.permissao[1]  && !this.permissao[2]) { // SSN
-                    if(opcao < 6){
-                        opcaoMapeada = opcao;
-                    }
-                    else{
-                        opcaoMapeada = opcao + 2;
-                    }
-                } else if (!this.permissao[0] && this.permissao[1]  && this.permissao[2]) { // NSS
-                    opcaoMapeada = opcao + 2;
-                }else if (!this.permissao[0] && !this.permissao[1] && !this.permissao[2]) { // NNN
-                    opcaoMapeada = opcao + 7;
-                } else {
-                    System.out.println("Opção inválida. Tente novamente.");
-                    continue;
                 }
-            }
 
-            switch (opcaoMapeada) {
-                case 1:
-                    cadastrarFornecedor(scanner);
-                    break;
-                case 2:
-                    removerFornecedor(scanner);
-                    break;
-                case 3:
-                    cadastrarProduto(scanner);
-                    break;
-                case 4:
-                    editarProduto(scanner);
-                    break;
-                case 5:
-                    removerProduto(scanner);
-                    break;
-                case 6:
-                    entradaProduto(scanner);
-                    break;
-                case 7:
-                    saidaProduto(scanner);
-                    break;
-                case 8:
-                    consultarProduto(scanner);
-                    break;
-                case 9:
-                    //gerarRelatorioMovimentacoes();
-                    break;
-                case 10:
-                    //gerarRelatorioEstoque();
-                    break;
-                case 11:
-                    //gerarRelatorioSugestaoCompra();
-                    break;
-                case 0:
-                    System.out.println("Saindo do sistema.");
-                    break;
-                default:
-                    System.out.println("Opção inválida. Tente novamente.");
+                switch (opcaoMapeada) {
+                    case 1:
+                        cadastrarFornecedor(scanner);
+                        break;
+                    case 2:
+                        removerFornecedor(scanner);
+                        break;
+                    case 3:
+                        cadastrarProduto(scanner);
+                        break;
+                    case 4:
+                        editarProduto(scanner);
+                        break;
+                    case 5:
+                        removerProduto(scanner);
+                        break;
+                    case 6:
+                        entradaProduto(scanner);
+                        break;
+                    case 7:
+                        saidaProduto(scanner);
+                        break;
+                    case 8:
+                        consultarProduto(scanner);
+                        break;
+                    case 9:
+                        //gerarRelatorioMovimentacoes();
+                        break;
+                    case 10:
+                        //gerarRelatorioEstoque();
+                        break;
+                    case 11:
+                        //gerarRelatorioSugestaoCompra();
+                        break;
+                    case 0:
+                        System.out.println("Saindo do sistema.");
+                        break;
+                    default:
+                        System.out.println("Opção inválida. Tente novamente.");
+                }
+            } catch (java.util.InputMismatchException e) {
+                System.out.println("Entrada inválida. Por favor, digite um número.");
+                scanner.nextLine(); 
             }
-        } catch (java.util.InputMismatchException e) {
-            System.out.println("Entrada inválida. Por favor, digite um número.");
-            scanner.nextLine(); 
-        }
-    } while (opcao != 0);
-}
+        } while (opcao != 0);
+    }
 
     public void cadastrarFornecedor(Scanner scanner){
-        boolean IdExist;
+        boolean IdExist = true;
 
         System.out.println("\nCadastrar Fornecedor:");
 
         System.out.print("Digite o nome do Fornecedor: ");
         String nome = scanner.nextLine();
 
-        int id;
+        int id = -1;
         do{
-            do{
-                System.out.print("Digite o ID do Fornecedor: ");
-                id = scanner.nextInt();
-
-                if(id < 1){
-                    System.out.println("ID inválido. Insira outro número, positivo e diferente de 0. ");
-                }
-            }while(id <1);
-            IdExist=false;
-            for(int i=0; i<Sistema.fornecedores.size();i++){
-                if(Sistema.fornecedores.get(i).getId()==id){
-                    IdExist=true;
-                    System.out.println("ID de fornecedor já existente no sistema, insira outro id: ");
-                    break;
-                }
-            };
+            try{
+                do{
+                    System.out.print("Digite o ID do Fornecedor: ");
+                    id = scanner.nextInt();
+    
+                    if(id < 1){
+                        System.out.println("ID inválido. Insira outro número, positivo e diferente de 0. ");
+                    }
+                }while(id <1);
+                IdExist=false;
+                for(int i=0; i<Sistema.fornecedores.size();i++){
+                    if(Sistema.fornecedores.get(i).getId()==id){
+                        IdExist=true;
+                        System.out.println("ID de fornecedor já existente no sistema, insira outro id: ");
+                        break;
+                    }
+                };
+            } catch(InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
+            }
         }while(IdExist);
         scanner.nextLine(); 
         
@@ -190,13 +197,25 @@ public class Gerente extends Usuario {
         if(Sistema.fornecedores.size()==0){
             System.out.println("Não há fornecedores registrados.");
         } else {
-
             System.out.println("Lista de Fornecedores:");
             listarFornecedores();
+            Fornecedor fornecedor = null;
+            boolean idLido = false;
+        
+            do{
+                try{
+                    System.out.print("Digite o ID do Fornecedor para remover: ");
+                    int id = scanner.nextInt();
+                    fornecedor = encontrarFornecedorPorId(id);
+                    idLido = true;
+                    scanner.nextLine();
+                } catch (InputMismatchException e) {
+                    System.out.println("Entrada inválida! Digite um número válido.");
+                    scanner.nextLine(); 
+                }
+            }while(!idLido);
     
-            System.out.print("Digite o ID do Fornecedor para remover: ");
-            int id = scanner.nextInt();
-            Fornecedor fornecedor = encontrarFornecedorPorId(id);
+            
     
             if (fornecedor != null) {
                 System.out.println("Você deseja confirmar a remoção de " + fornecedor.getNome() + "? (s/n)");
@@ -218,7 +237,7 @@ public class Gerente extends Usuario {
     public void listarFornecedores() {
         for(int i=0; i<Sistema.fornecedores.size();i++){
             Fornecedor fornecedor = Sistema.fornecedores.get(i);
-            System.out.println(fornecedor.getId()+ " - ");
+            System.out.print(fornecedor.getId()+ " - ");
             System.out.println(fornecedor.getNome());
             System.out.println("Contato: " + fornecedor.getContato() + "\n");
         }
@@ -234,59 +253,119 @@ public class Gerente extends Usuario {
     }
 
     public void cadastrarProduto(Scanner scanner){
-        boolean IdExist;
+        boolean IdExist = true;
+        boolean valorLido = false;
 
         System.out.println("\nCadastrar Produto:");
 
         System.out.print("Digite o nome do Produto: ");
         String nome = scanner.nextLine();
 
-        int id;
+        int id = -1;
         do{
-            System.out.print("Digite o ID do Produto: ");
-            id = scanner.nextInt();
-            IdExist=false;
-            for(int i=0; i<Sistema.products.size();i++){
-                if(Sistema.products.get(i).getId()==id){
-                    IdExist=true;
-                    System.out.println("ID de produto já existente no sistema, insira outro id: ");
-                    break;
-                }
-            };
+            try{
+                System.out.print("Digite o ID do Produto: ");
+                id = scanner.nextInt();
+                IdExist=false;
+                for(int i=0; i<Sistema.products.size();i++){
+                    if(Sistema.products.get(i).getId()==id){
+                        IdExist=true;
+                        System.out.println("ID de produto já existente no sistema, insira outro id: ");
+                        break;
+                    }
+                };
+            } catch(InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
+            }
         }while(IdExist);
         scanner.nextLine(); 
         
         System.out.print("Digite a categoria do produto: ");
         String categoria = scanner.nextLine();
 
-        System.out.print("Digite o preço de venda do produto: ");
-        double price = scanner.nextDouble();
-        scanner.nextLine();
+        double price = -1;
+        do{
+            try{
+                System.out.print("Digite o preço de venda do produto: ");
+                price = scanner.nextDouble();
+                scanner.nextLine();
+                valorLido = true;
+            } catch(InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
+            }
+        } while(!valorLido);
+        valorLido = false;
 
-        System.out.print("Digite o custo de compra do produto: ");
-        double cost = scanner.nextDouble();
-        scanner.nextLine();
+        double cost = -1;
+        do{
+            try{
+                System.out.print("Digite o custo de compra do produto: ");
+                cost = scanner.nextDouble();
+                scanner.nextLine();
+                valorLido = true;
+            } catch(InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
+            }
+        } while(!valorLido);
+        valorLido = false;
 
-        System.out.print("Digite o estoque minimo desejado do produto: ");
-        int minCapacity = scanner.nextInt();
-        scanner.nextLine();
+        int minCapacity = -1;
+        do{
+            try{
+                System.out.print("Digite o estoque minimo desejado do produto: ");
+                minCapacity = scanner.nextInt();
+                scanner.nextLine();
+                valorLido = true;
+            } catch(InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
+            }
+        } while(!valorLido);
+        valorLido = false;
 
-        System.out.print("Digite o estoque máximo do produto: ");
-        int maxCapacity = scanner.nextInt();
-        scanner.nextLine();
+        int maxCapacity = -1;
+        do{
+            try{
+                System.out.print("Digite o estoque máximo do produto: ");
+                maxCapacity = scanner.nextInt();
+                scanner.nextLine();
+                valorLido = true;
+            } catch(InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
+            }
+        } while(!valorLido);
+        valorLido = false;
 
-        System.out.print("Qual o fornecedor do produto: ");
+        System.out.println("Lista de Fornecedores:");
         listarFornecedores();
-        System.out.println("Selecione o ID do fornecedor:");
-        int fornecedorID = scanner.nextInt();
+        Fornecedor fornecedor = null;
+        boolean idLido = false;
+    
+        do{
+            try{
+                System.out.println("Selecione o ID do fornecedor:");
+                int fornecedorID = scanner.nextInt();
+                fornecedor = encontrarFornecedorPorId(fornecedorID);
+                idLido = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
+            }
+        }while(!idLido);
         scanner.nextLine();
-
-        Fornecedor fornecedor = encontrarFornecedorPorId(fornecedorID);
-        Produto produto = new Produto(nome, id, categoria, price, cost, minCapacity, maxCapacity, fornecedor);
-
-        Sistema.products.add(produto);
-        Sistema.salvarProdutos();
-        System.out.println("Produto cadastrado com sucesso.");
+        if(fornecedor!=null){
+            Produto produto = new Produto(nome, id, categoria, price, cost, minCapacity, maxCapacity, fornecedor);
+    
+            Sistema.products.add(produto);
+            Sistema.salvarProdutos();
+            System.out.println("Produto cadastrado com sucesso.");
+        } else {
+            System.out.println("Fornecedor não encontrado.");
+        }
     }
     
     private void removerProduto(Scanner scanner) {
@@ -295,10 +374,19 @@ public class Gerente extends Usuario {
         }else{
             System.out.println("Lista de Produtos:");
             listarProdutos();
-    
-            System.out.print("Digite o ID do Produto para remover: ");
-            int id = scanner.nextInt();
-            Produto produto = encontrarProdutoPorId(id);
+            boolean idLido = false;
+            Produto produto = null;
+            do{
+                try{
+                    System.out.print("Digite o ID do Produto para remover: ");
+                    int id = scanner.nextInt();
+                    produto = encontrarProdutoPorId(id);
+                    idLido = true;
+                } catch(InputMismatchException e) {
+                    System.out.println("Entrada inválida! Digite um número válido.");
+                    scanner.nextLine(); 
+                }
+            } while(!idLido);
     
             if (produto != null) {
                 if(produto.getQtdEstoque() == 0){
@@ -493,6 +581,7 @@ public class Gerente extends Usuario {
     //tem q testar
     // listar produtos antes de pedir id
     // listar atributos do produto selecionado
+    // produtos com fornecedor que foi removido n pode mais receber entrada
     public void entradaProduto(Scanner scanner) {
         boolean IdExist;
         int id;

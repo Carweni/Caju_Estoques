@@ -1,62 +1,59 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
+// TENTAR LIMPAR O CONSOLE
 public class ADMgeral extends Usuario {
 
     public ADMgeral(String nome, int id, String cargo, String senha) {
         super(nome, id, cargo, senha);
     }
 
-    // ver se listar usuarios como opção tem que mudar la no documento
     public void exibirMenuAdmGeral(Scanner scanner) {
-    int opcao = -1;
+        int opcao = -1;
 
-    do {
-        try {
-            System.out.println("\nMenu:");
-            System.out.println("1. Cadastrar Usuário Gerente");
-            System.out.println("2. Alterar Permissões de Usuário");
-            System.out.println("3. Remover Usuário");
-            System.out.println("4. Listar Usuários");
-            System.out.println("5. Alterar Informações de Administrador");
-            System.out.println("0. Sair");
-            System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
-            scanner.nextLine(); 
+        do {
+            try {
+                System.out.println("\nMenu:");
+                System.out.println("1. Cadastrar Usuário Gerente");
+                System.out.println("2. Alterar Permissões de Usuário");
+                System.out.println("3. Remover Usuário");
+                System.out.println("4. Listar Usuários");
+                System.out.println("5. Alterar Informações de Administrador");
+                System.out.println("0. Sair");
+                System.out.print("Escolha uma opção: ");
+                opcao = scanner.nextInt();
+                scanner.nextLine(); 
 
-            switch (opcao) {
-                case 1:
-                    cadastrarUsuarioGerente(scanner);
-                    break;
-                case 2:
-                    alterarPermissoesUsuario(scanner);
-                    break;
-                case 3:
-                    removerUsuario(scanner);
-                    break;
-                case 4:
-                    listarUsers();
-                    break;
-                case 5:
-                    alterarInfos(scanner);
-                    break;
-                case 0:
-                    System.out.println("Saindo do menu de administração.");
-                    break;
-                default:
-                    System.out.println("Opção inválida. Tente novamente.");
+                switch (opcao) {
+                    case 1:
+                        cadastrarUsuarioGerente(scanner);
+                        break;
+                    case 2:
+                        alterarPermissoesUsuario(scanner);
+                        break;
+                    case 3:
+                        removerUsuario(scanner);
+                        break;
+                    case 4:
+                        listarUsers();
+                        break;
+                    case 5:
+                        alterarInfos(scanner);
+                        break;
+                    case 0:
+                        System.out.println("Saindo do menu de administração.");
+                        break;
+                    default:
+                        System.out.println("Opção inválida. Tente novamente.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
             }
-        } catch (InputMismatchException e) {
-            System.out.println("Entrada inválida! Digite um número válido.");
-            scanner.nextLine(); 
-        }
-    } while (opcao != 0);
-}
-
-    // deixar bonito
-    // tem q try catch os int e outros
+        } while (opcao != 0);
+    }
+    
     private void cadastrarUsuarioGerente(Scanner scanner) {
-        boolean IdExist;
+        boolean IdExist = true;
         boolean[] permission = new boolean[3];
         for (int i = 0; i < permission.length; i++) {
             permission[i] = false;
@@ -71,18 +68,23 @@ public class ADMgeral extends Usuario {
         String cargo = scanner.nextLine();
 
         // Verifica se id de usuário já existe no sistema.
-        int id;
+        int id = -1;
         do{
-            System.out.print("Digite o ID do Usuário Gerente: ");
-            id = scanner.nextInt();
-            IdExist=false;
-            for(int i=0; i<Sistema.users.size();i++){
-                if(Sistema.users.get(i).getId()==id){
-                    IdExist=true;
-                    System.out.println("ID de usuário já existente no sistema, insira outro id: ");
-                    break;
-                }
-            };
+            try{
+                System.out.print("Digite o ID do Usuário Gerente: ");
+                id = scanner.nextInt();
+                IdExist=false;
+                for(int i=0; i<Sistema.users.size();i++){
+                    if(Sistema.users.get(i).getId()==id){
+                        IdExist=true;
+                        System.out.println("ID de usuário já existente no sistema, insira outro id: ");
+                        break;
+                    }
+                };
+            } catch(InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
+            }
         }while(IdExist);
         scanner.nextLine();  
         
@@ -127,10 +129,20 @@ public class ADMgeral extends Usuario {
     private void alterarPermissoesUsuario(Scanner scanner) {
         System.out.println("Lista de Usuários:");
         listarUsers();
-
-        System.out.print("Digite o ID do Usuário para alterar permissões: ");
-        int id = scanner.nextInt();
-        Usuario usuario = encontrarUsuarioPorId(id);
+        Usuario usuario = null;
+        boolean idLido = false;
+        
+        do{
+            try{
+                System.out.print("Digite o ID do Usuário para alterar permissões: ");
+                int id = scanner.nextInt();
+                usuario = encontrarUsuarioPorId(id);
+                idLido = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
+            }
+        }while(!idLido);
 
         if (usuario instanceof Gerente) {
             boolean[] permission = new boolean[3];
@@ -175,10 +187,20 @@ public class ADMgeral extends Usuario {
     private void removerUsuario(Scanner scanner) {
         System.out.println("Lista de Usuários:");
         listarUsers();
-
-        System.out.print("Digite o ID do Usuário para remover: ");
-        int id = scanner.nextInt();
-        Usuario usuario = encontrarUsuarioPorId(id);
+        Usuario usuario = null;
+        boolean idLido = false;
+        
+        do{
+            try{
+                System.out.print("Digite o ID do Usuário para alterar permissões: ");
+                int id = scanner.nextInt();
+                usuario = encontrarUsuarioPorId(id);
+                idLido = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
+            }
+        }while(!idLido);
 
         if (usuario != null) {
             if(usuario.getId() == 1){
@@ -242,49 +264,53 @@ public class ADMgeral extends Usuario {
         }
     }
     
-    // ver se vamos deixar isso mesmo e adicionar la no docs ou só deixar assim, ou apagar
     public void alterarInfos(Scanner scanner) {  
-        int opcao;
+        int opcao = -1;
 
         do {
-            System.out.println("1. Alterar nome");
-            System.out.println("2. Alterar senha");
-            System.out.println("0. Voltar");
-            System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
-            char confirm;
-
-            switch (opcao) {
-                case 1:
-                    System.out.println("Digite o nome: ");
-                    scanner.nextLine();
-                    String nome = scanner.nextLine();
-                    System.out.println("Confirma (s/n): ");
-                    confirm = scanner.next().charAt(0);
-                    if(confirm == 's'){
-                        super.setNome(nome);
-                        System.out.println("Nome alterado com sucesso!");
-                    } else {
-                        System.out.println("Operação cancelada");
-                    }
-                    break;
-                case 2:
-                    System.out.println("Digite nova senha: ");
-                    String senha = scanner.nextLine();
-                    System.out.println("Confirma (s/n): ");
-                    confirm = scanner.next().charAt(0);
-                    if(confirm == 's'){
-                        super.setSenha(senha);
-                        System.out.println("Senha alterada com sucesso!");
-                    } else {
-                        System.out.println("Operação cancelada");
-                    }
-                    break;
-                case 0:
-                    System.out.println("Voltando.");
-                    break;
-                default:
-                    System.out.println("Opção inválida. Tente novamente.");
+            try{
+                System.out.println("1. Alterar nome");
+                System.out.println("2. Alterar senha");
+                System.out.println("0. Voltar");
+                System.out.print("Escolha uma opção: ");
+                opcao = scanner.nextInt();
+                char confirm;
+    
+                switch (opcao) {
+                    case 1:
+                        System.out.println("Digite o nome: ");
+                        scanner.nextLine();
+                        String nome = scanner.nextLine();
+                        System.out.println("Confirma (s/n): ");
+                        confirm = scanner.next().charAt(0);
+                        if(confirm == 's'){
+                            super.setNome(nome);
+                            System.out.println("Nome alterado com sucesso!");
+                        } else {
+                            System.out.println("Operação cancelada");
+                        }
+                        break;
+                    case 2:
+                        System.out.println("Digite nova senha: ");
+                        String senha = scanner.nextLine();
+                        System.out.println("Confirma (s/n): ");
+                        confirm = scanner.next().charAt(0);
+                        if(confirm == 's'){
+                            super.setSenha(senha);
+                            System.out.println("Senha alterada com sucesso!");
+                        } else {
+                            System.out.println("Operação cancelada");
+                        }
+                        break;
+                    case 0:
+                        System.out.println("Voltando.");
+                        break;
+                    default:
+                        System.out.println("Opção inválida. Tente novamente.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
             }
         } while (opcao != 0);
     }

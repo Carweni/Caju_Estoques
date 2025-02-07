@@ -59,6 +59,7 @@ public class Sistema {
                         Login(sistema, scanner);
                         break;
                     case 0:
+                        limparConsole();
                         System.out.println("Saindo do sistema.");
                         break;
                     default:

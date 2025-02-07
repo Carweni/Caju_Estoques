@@ -28,6 +28,8 @@ public class ADMgeral extends Usuario {
                         cadastrarUsuarioGerente(scanner);
                         break;
                     case 2:
+                        System.out.println();
+                        System.out.println();
                         alterarPermissoesUsuario(scanner);
                         break;
                     case 3:
@@ -40,12 +42,14 @@ public class ADMgeral extends Usuario {
                         alterarInfos(scanner);
                         break;
                     case 0:
+                        limparConsole();
                         System.out.println("Saindo do menu de administração.");
                         break;
                     default:
                         System.out.println("Opção inválida. Tente novamente.");
                 }
             } catch (InputMismatchException e) {
+                limparConsole();
                 System.out.println("Entrada inválida! Digite um número válido.");
                 scanner.nextLine(); 
             }
@@ -53,6 +57,7 @@ public class ADMgeral extends Usuario {
     }
     
     private void cadastrarUsuarioGerente(Scanner scanner) {
+        limparConsole();
         boolean IdExist = true;
         boolean[] permission = new boolean[3];
         for (int i = 0; i < permission.length; i++) {
@@ -181,6 +186,7 @@ public class ADMgeral extends Usuario {
             limparConsole();
             ((Gerente)usuario).setPermissao(permission);
             Sistema.salvarUsuarios();
+            System.out.println("Permissão de gerente alterada com sucesso.");
         } else {
             limparConsole();
             System.out.println("Usuário não encontrado ou não é um gerente.");
@@ -195,7 +201,7 @@ public class ADMgeral extends Usuario {
         
         do{
             try{
-                System.out.print("Digite o ID do Usuário para alterar permissões: ");
+                System.out.print("Digite o ID do Usuário para remove-lo: ");
                 int id = scanner.nextInt();
                 usuario = encontrarUsuarioPorId(id);
                 idLido = true;
@@ -218,11 +224,13 @@ public class ADMgeral extends Usuario {
                     limparConsole();
                     System.out.println("Usuário removido com sucesso.");
                 }else{
+                    limparConsole();
                     System.out.println("Operação cancelada.");
                 }
                 
             }
         } else {
+            limparConsole();
             System.out.println("Usuário não encontrado.");
         }
     }
@@ -277,6 +285,7 @@ public class ADMgeral extends Usuario {
     }    
     
     public void alterarInfos(Scanner scanner) {  
+        limparConsole();
         int opcao = -1;
 
         do {
@@ -300,11 +309,13 @@ public class ADMgeral extends Usuario {
                             limparConsole();
                             System.out.println("Nome alterado com sucesso!");
                         } else {
+                            limparConsole();
                             System.out.println("Operação cancelada");
                         }
                         break;
                     case 2:
                         System.out.println("Digite nova senha: ");
+                        scanner.nextLine();
                         String senha = scanner.nextLine();
                         System.out.println("Confirma (s/n): ");
                         confirm = scanner.next().charAt(0);
@@ -313,10 +324,12 @@ public class ADMgeral extends Usuario {
                             limparConsole();
                             System.out.println("Senha alterada com sucesso!");
                         } else {
+                            limparConsole();
                             System.out.println("Operação cancelada");
                         }
                         break;
                     case 0:
+                        limparConsole();
                         System.out.println("Voltando.");
                         break;
                     default:

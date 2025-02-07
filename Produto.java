@@ -79,6 +79,10 @@ public class Produto implements Serializable {
         this.fornecedor=fornecedor;
     }
 
+    public void setQtdEstoque(int qtde){
+        this.qtdEstoque += qtde;
+    }
+
     public void mostrarProduto(){
         System.out.println("\n" + ID + " - " + nome + ": ");
         System.out.println("Categoria: " + this.categoria + "\nCusto de Compra: R$" + this.cost + "\nPreço de Venda: R$" + this.price);

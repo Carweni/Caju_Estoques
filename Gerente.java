@@ -136,7 +136,7 @@ public class Gerente extends Usuario {
                         //gerarRelatorioEstoque();
                         break;
                     case 11:
-                        //gerarRelatorioSugestaoCompra();
+                        gerarRelatorioSugestaoCompra();
                         break;
                     case 0:
                         System.out.println("Saindo do sistema.");
@@ -424,9 +424,11 @@ public class Gerente extends Usuario {
                     System.out.print("Digite o ID do Produto para editar: ");
                     int id = scanner.nextInt();
                     produto = encontrarProdutoPorId(id); 
+                    idLido = true;
                 } catch(InputMismatchException e) {
                     System.out.println("Entrada inválida! Digite um número válido.");
                     scanner.nextLine(); 
+                    idLido = false;
                 }
             }while(!idLido);
 
@@ -785,11 +787,13 @@ public class Gerente extends Usuario {
                 System.out.println("A quantidade informada excede a capacidade máxima de estoque. O valor máximo para isso não ocorrer é " + maxEntrada);
             } else {
                 validqtde = true;
+                produto.setQtdEstoque(qtde);
             }
         } while (!validqtde);
     
-        Movimentacao mov = Sistema.movimentacoes.get(Sistema.movimentacoes.size() - 1);
-        Movimentacao movimentacao = new Movimentacao("entrada", qtde, produto, this, mov.getId());
+        Movimentacao mov = new Movimentacao("entrada", qtde, produto, this, Sistema.movimentacoes.size() + 1);
+        Sistema.movimentacoes.add(mov);
+        Sistema.salvarMovimentacoes();
     }
     
     //fazer poder cancelar
@@ -824,8 +828,8 @@ public class Gerente extends Usuario {
             scanner.nextLine();
             if(qtde>produto.getQtdEstoque()){
                 validqtde = false;
-                int maxEntrada = produto.getQtdEstoque();
-                System.out.println("Há apenas "+ maxEntrada + " deste produto em estoque. Informe um valor menor: ");
+                int maxSaida = produto.getQtdEstoque();
+                System.out.println("Há apenas "+ maxSaida + " deste produto em estoque. Informe um valor menor: ");
             } else {
                 if(produto.getQtdEstoque()-qtde<produto.getMinCapacity()){
                     System.out.println("A quantidade em estoque será menor que a quantidade mínima desejada. Deseja proceguir (s/n)?");
@@ -833,11 +837,13 @@ public class Gerente extends Usuario {
                     scanner.nextLine();
                     if(op == 's'){
                         validqtde = true;
+                        produto.setQtdEstoque(-qtde);
                     } else {
                         validqtde = false;
                     }
                 } else {
                     validqtde = true;
+                    produto.setQtdEstoque(-qtde);
                 }
             }
         }while (!validqtde);
@@ -845,4 +851,33 @@ public class Gerente extends Usuario {
         Movimentacao mov = Sistema.movimentacoes.get(Sistema.movimentacoes.size()-1);
         Movimentacao movimentacao = new Movimentacao("saida", qtde, produto, this, mov.getId());
     }
+
+    public void gerarRelatorioSugestaoCompra() {
+        System.out.println("\nRelatório de Sugestão de Compra");
+        System.out.println("--------------------------------------");
+        
+        boolean necessidadeCompra = false;
+        
+        for (Produto produto : Sistema.products) {
+            int qtdAtual = produto.getQtdEstoque();
+            int qtdMinima = produto.getMinCapacity();
+            
+            if (qtdAtual <= qtdMinima) {
+                necessidadeCompra = true;
+                String motivo = (qtdAtual == 0) ? "Estoque zerado" : "Estoque abaixo do mínimo";
+                
+                System.out.println("Produto: " + produto.getNome() + " | Quantidade Atual: " + qtdAtual + " | Quantidade Mínima: " + qtdMinima + 
+                        " | Motivo para compra: "+ motivo);
+
+                System.out.println("--------------------------------------");
+            }
+        }
+        
+        if (!necessidadeCompra) {
+            System.out.println("Todos os produtos estão dentro dos níveis adequados de estoque.");
+            System.out.println("--------------------------------------");
+        }
+        
+    }
+    
 }

@@ -190,6 +190,7 @@ public class Gerente extends Usuario {
 
         Sistema.fornecedores.add(new Fornecedor(nome, id, contato));
         Sistema.salvarFornecedores();
+        limparConsole();
         System.out.println("Fornecedor cadastrado com sucesso.");
     }
 
@@ -224,11 +225,14 @@ public class Gerente extends Usuario {
                 if (confirmacao == 's' || confirmacao == 'S'){
                     Sistema.fornecedores.remove(fornecedor);
                     Sistema.salvarFornecedores();
+                    limparConsole();
                     System.out.println("Fornecedor removido com sucesso.");
                 }else{
+                    limparConsole();
                     System.out.println("Operação cancelada.");
                 }
             } else {
+                limparConsole();
                 System.out.println("Fornecedor não encontrado.");
             }
         }
@@ -362,8 +366,10 @@ public class Gerente extends Usuario {
     
             Sistema.products.add(produto);
             Sistema.salvarProdutos();
+            limparConsole();
             System.out.println("Produto cadastrado com sucesso.");
         } else {
+            limparConsole();
             System.out.println("Fornecedor não encontrado.");
         }
     }
@@ -396,15 +402,19 @@ public class Gerente extends Usuario {
                     if(confirmacao == 's' || confirmacao == 'S'){
                         Sistema.products.remove(produto);
                         Sistema.salvarProdutos();
+                        limparConsole();
                         System.out.println("Produto removido com sucesso.");
                     }else{
+                        limparConsole();
                         System.out.println("Operação de remoção cancelada. ");
                     }
                     
                 }else{
+                    limparConsole();
                     System.out.println("Ainda há unidades em estoque, remova antes de deletar o produto.");
                 }
             } else {
+                limparConsole();
                 System.out.println("Produto não encontrado.");
             }
         }
@@ -485,8 +495,10 @@ public class Gerente extends Usuario {
 
                             if(confirmacao == 's' || confirmacao == 'S'){
                                 produto.setID(novoID);
+                                limparConsole();
                                 System.out.println("O ID foi alterado com sucesso. ");
                             }else{
+                                limparConsole();
                                 System.out.println("Operação cancelada. ");
                             }
 
@@ -501,8 +513,10 @@ public class Gerente extends Usuario {
 
                             if(confirmacao == 's' || confirmacao == 'S'){
                                 produto.setNome(novoNome);
+                                limparConsole();
                                 System.out.println("O nome foi alterado com sucesso. ");
                             }else{
+                                limparConsole();
                                 System.out.println("Operação cancelada. ");
                             }
 
@@ -517,8 +531,10 @@ public class Gerente extends Usuario {
 
                             if(confirmacao == 's' || confirmacao == 'S'){
                                 produto.setCategoria(novaCat);
+                                limparConsole();
                                 System.out.println("A categoria foi alterado com sucesso. ");
                             }else{
+                                limparConsole();
                                 System.out.println("Operação cancelada. ");
                             }
 
@@ -544,8 +560,10 @@ public class Gerente extends Usuario {
 
                             if(confirmacao == 's' || confirmacao == 'S'){
                                 produto.setPrice(novoPreco);
+                                limparConsole();
                                 System.out.println("O preço foi alterado com sucesso. ");
                             }else{
+                                limparConsole();
                                 System.out.println("Operação cancelada. ");
                             }
                             break;
@@ -570,8 +588,10 @@ public class Gerente extends Usuario {
 
                             if(confirmacao == 's' || confirmacao == 'S'){
                                 produto.setCost(novoCost);
+                                limparConsole();
                                 System.out.println("O custo foi alterado com sucesso. ");
                             }else{
+                                limparConsole();
                                 System.out.println("Operação cancelada. ");
                             }
                             
@@ -597,8 +617,10 @@ public class Gerente extends Usuario {
 
                             if(confirmacao == 's' || confirmacao == 'S'){
                                 produto.setMinCapacity(novoMinCapacity);
+                                limparConsole();
                                 System.out.println("A capacidade mínima foi alterada com sucesso. ");
                             }else{
+                                limparConsole();
                                 System.out.println("Operação cancelada. ");
                             }
 
@@ -624,8 +646,10 @@ public class Gerente extends Usuario {
 
                             if(confirmacao == 's' || confirmacao == 'S'){
                                 produto.setMaxCapacity(novoMaxCapacity);
+                                limparConsole();
                                 System.out.println("A capacidade mínima foi alterada com sucesso. ");
                             }else{
+                                limparConsole();
                                 System.out.println("Operação cancelada. ");
                             }
                             break;
@@ -652,8 +676,10 @@ public class Gerente extends Usuario {
 
                                 if(confirmacao == 's' || confirmacao == 'S'){
                                     produto.setFornecedor(novoFornecedor);
+                                    limparConsole();
                                     System.out.println("O fornecedor foi alterada com sucesso. ");
                                 }else{
+                                    limparConsole();
                                     System.out.println("Operação cancelada. ");
                                 }
                             }else{
@@ -679,7 +705,7 @@ public class Gerente extends Usuario {
         System.out.println("Produtos:");
         for(int i=0; i<Sistema.products.size();i++){
             Produto produto = Sistema.products.get(i);
-            System.out.print(produto.getId() + "- ");
+            System.out.print(produto.getId() + " - ");
             System.out.println(produto.getNome());
             System.out.println();
         }
@@ -745,15 +771,24 @@ public class Gerente extends Usuario {
     
     //fazer poder cancelar
     //tem q testar
-    // listar produtos antes de pedir id
     // listar atributos do produto selecionado
-    // produtos com fornecedor que foi removido n pode mais receber entrada
     public void entradaProduto(Scanner scanner) {
         boolean IdExist;
         int id;
+
+        System.out.println("Lista de Produtos:");
+        listarProdutos();
+
         do {
-            System.out.print("Informe o ID do produto: ");
+            System.out.print("Informe o ID do produto (ou 0 para cancelar): ");
             id = scanner.nextInt();
+            scanner.nextLine(); 
+    
+            if (id == 0) {
+                System.out.println("Operação cancelada.");
+                return;
+            }
+    
             IdExist = false;
             for (int i = 0; i < Sistema.products.size(); i++) {
                 if (Sistema.products.get(i).getId() == id) {
@@ -761,11 +796,11 @@ public class Gerente extends Usuario {
                     break;
                 }
             }
+    
             if (!IdExist) {
-                System.out.println("Não há produto com esse ID cadastrados, insira outro ID: ");
+                System.out.println("Não há produto com esse ID cadastrado. Insira outro ID.");
             }
         } while (!IdExist);
-        scanner.nextLine();
     
         Produto produto = encontrarProdutoPorId(id);
     
@@ -798,11 +833,14 @@ public class Gerente extends Usuario {
     
     //fazer poder cancelar
     //tem que testar
-    // listar produtos antes de pedir id
     // listar atributos do produto selecionado
     public void saidaProduto(Scanner scanner){
         boolean IdExist;
         int id;
+
+        System.out.println("Lista de Produtos:");
+        listarProdutos();
+
         do{
             System.out.print("Informe o ID do produto: ");
             id = scanner.nextInt();
@@ -880,5 +918,13 @@ public class Gerente extends Usuario {
         }
         
     }
+
+    public static void limparConsole() {
+        try {
+            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        } catch (Exception e) {
+            System.out.println("Erro ao limpar console");
+        }
+    } 
     
 }

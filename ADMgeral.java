@@ -178,9 +178,11 @@ public class ADMgeral extends Usuario {
                 System.out.println("Permissão negada");
             }
 
+            limparConsole();
             ((Gerente)usuario).setPermissao(permission);
             Sistema.salvarUsuarios();
         } else {
+            limparConsole();
             System.out.println("Usuário não encontrado ou não é um gerente.");
         }
     }

@@ -55,6 +55,7 @@ public class Sistema {
 
                 switch (opcao) {
                     case 1:
+                        limparConsole();
                         Login(sistema, scanner);
                         break;
                     case 0:
@@ -88,9 +89,11 @@ public class Sistema {
         }
 
         if (usuarioAutenticado != null) {
+            limparConsole();
             System.out.println("Login bem-sucedido!");
             sistema.exibirMenu(usuarioAutenticado, scanner);
         } else {
+            limparConsole();
             System.out.println("Credenciais inválidas. Tente novamente.");
         }
     }
@@ -115,6 +118,7 @@ public class Sistema {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static ArrayList<Usuario> carregarUsuarios() {
         File arquivo = new File(FILE_NAME_U);
         if (!arquivo.exists()) {
@@ -136,6 +140,7 @@ public class Sistema {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static ArrayList<Fornecedor> carregarFornecedores() {
         File arquivo = new File(FILE_NAME_F);
         if (!arquivo.exists()) {
@@ -157,6 +162,7 @@ public class Sistema {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static ArrayList<Produto> carregarProdutos() {
         File arquivo = new File(FILE_NAME_P);
         if (!arquivo.exists()) {
@@ -178,6 +184,7 @@ public class Sistema {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static ArrayList<Movimentacao> carregarMovimentacoes() {
         File arquivo = new File(FILE_NAME_M);
         if (!arquivo.exists()) {
@@ -190,4 +197,12 @@ public class Sistema {
             return new ArrayList<>();
         }
     }
+
+    public static void limparConsole() {
+        try {
+            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        } catch (Exception e) {
+            System.out.println("Erro ao limpar console");
+        }
+    }   
 }

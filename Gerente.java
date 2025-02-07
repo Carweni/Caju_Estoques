@@ -848,8 +848,9 @@ public class Gerente extends Usuario {
             }
         }while (!validqtde);
         
-        Movimentacao mov = Sistema.movimentacoes.get(Sistema.movimentacoes.size()-1);
-        Movimentacao movimentacao = new Movimentacao("saida", qtde, produto, this, mov.getId());
+        Movimentacao mov = new Movimentacao("saída", qtde, produto, this, Sistema.movimentacoes.size() + 1);
+        Sistema.movimentacoes.add(mov);
+        Sistema.salvarMovimentacoes();
     }
 
     public void gerarRelatorioSugestaoCompra() {

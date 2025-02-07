@@ -1,6 +1,6 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
-// TENTAR LIMPAR O CONSOLE
+
 public class ADMgeral extends Usuario {
 
     public ADMgeral(String nome, int id, String cargo, String senha) {
@@ -123,6 +123,7 @@ public class ADMgeral extends Usuario {
         Sistema.users.add(novoGerente);
         Sistema.salvarUsuarios();
 
+        limparConsole();
         System.out.println("Usuário Gerente cadastrado com sucesso.");
     }
 
@@ -212,6 +213,7 @@ public class ADMgeral extends Usuario {
                 if (confirmacao == 's' || confirmacao == 'S'){
                     Sistema.users.remove(usuario);
                     Sistema.salvarUsuarios();
+                    limparConsole();
                     System.out.println("Usuário removido com sucesso.");
                 }else{
                     System.out.println("Operação cancelada.");
@@ -263,6 +265,14 @@ public class ADMgeral extends Usuario {
             System.out.println();
         }
     }
+
+    public static void limparConsole() {
+        try {
+            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        } catch (Exception e) {
+            System.out.println("Erro ao limpar console");
+        }
+    }    
     
     public void alterarInfos(Scanner scanner) {  
         int opcao = -1;
@@ -285,6 +295,7 @@ public class ADMgeral extends Usuario {
                         confirm = scanner.next().charAt(0);
                         if(confirm == 's'){
                             super.setNome(nome);
+                            limparConsole();
                             System.out.println("Nome alterado com sucesso!");
                         } else {
                             System.out.println("Operação cancelada");
@@ -297,6 +308,7 @@ public class ADMgeral extends Usuario {
                         confirm = scanner.next().charAt(0);
                         if(confirm == 's'){
                             super.setSenha(senha);
+                            limparConsole();
                             System.out.println("Senha alterada com sucesso!");
                         } else {
                             System.out.println("Operação cancelada");

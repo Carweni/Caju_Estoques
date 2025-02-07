@@ -409,102 +409,251 @@ public class Gerente extends Usuario {
             }
         }
     }
-    //FAZER PODER CANCELAR DEPOIS DE ESCOLHER EDITAR
-    //SE PUDER CANCELAR, FAZER PEDIR DENOVO SE PRODUTO NÃO EXISTIR
+    
     public void editarProduto(Scanner scanner) {
         if(Sistema.products.size()==0){
             System.out.println("Não há produtos cadastrados.");
         }else{
             System.out.println("Lista de produtos: ");
             listarProdutos();
-            
-            System.out.print("Digite o ID do Produto para editar: ");
-            int id = scanner.nextInt();
-            Produto produto = encontrarProdutoPorId(id); 
+            boolean idLido = false;
+            Produto produto = null;
 
-            int opcao;
+            do{
+                try{
+                    System.out.print("Digite o ID do Produto para editar: ");
+                    int id = scanner.nextInt();
+                    produto = encontrarProdutoPorId(id); 
+                } catch(InputMismatchException e) {
+                    System.out.println("Entrada inválida! Digite um número válido.");
+                    scanner.nextLine(); 
+                }
+            }while(!idLido);
+
+            int opcao = -1;
 
             if(produto != null){
-                //FAZER MOSTRAR PRODUTO
+                produto.mostrarProduto();
                 do {
-                    System.out.println("\nInforme um campo a ser alterado:");
-                    System.out.println("1. ID");
-                    System.out.println("2. NOME");
-                    System.out.println("3. CATEGORIA");
-                    System.out.println("4. PREÇO DE VENDA");
-                    System.out.println("5. CUSTO DE COMPRA");
-                    System.out.println("6. ESTOQUE MÍNIMO DESEJADO");
-                    System.out.println("7. CAPACIDADE MÁXIMA DE ESTOQUE");
-                    System.out.println("8. FORNECEDOR");
-                    System.out.println("0. Voltar");
-                    System.out.print("Escolha uma opção: ");
-                    opcao = scanner.nextInt();
+                    try{
+                        System.out.println("\nInforme um campo a ser alterado:");
+                        System.out.println("1. ID");
+                        System.out.println("2. NOME");
+                        System.out.println("3. CATEGORIA");
+                        System.out.println("4. PREÇO DE VENDA");
+                        System.out.println("5. CUSTO DE COMPRA");
+                        System.out.println("6. ESTOQUE MÍNIMO DESEJADO");
+                        System.out.println("7. CAPACIDADE MÁXIMA DE ESTOQUE");
+                        System.out.println("8. FORNECEDOR");
+                        System.out.println("0. Voltar");
+                        System.out.print("Escolha uma opção: ");
+                        opcao = scanner.nextInt();
+                        scanner.nextLine();
+                    } catch(InputMismatchException e) {
+                        System.out.println("Entrada inválida! Digite um número válido.");
+                        scanner.nextLine(); 
+                    }
 
-                    //fazer poder cancelar?
-                    //fazer n poder editar e colocar o mesmo nome?
                     switch (opcao) {
                         case 1:
-                            int novoID;
-                            boolean IdExist;
+                            int novoID = -1;
+                            boolean IdExist = true;
                             do{
-                                System.out.print("Digite o novo ID do Produto: ");
-                                novoID = scanner.nextInt();
-                                IdExist=false;
-                                for(int i=0; i<Sistema.products.size();i++){
-                                    if(Sistema.products.get(i).getId()==novoID){
-                                        IdExist=true;
-                                        System.out.println("ID de produto já existente no sistema, insira outro id: ");
-                                        break;
-                                    }
-                                };
+                                try{
+                                    System.out.print("Digite o novo ID do Produto: ");
+                                    novoID = scanner.nextInt();
+                                    IdExist=false;
+                                    for(int i=0; i<Sistema.products.size();i++){
+                                        if(Sistema.products.get(i).getId()==novoID){
+                                            IdExist=true;
+                                            System.out.println("ID de produto já existente no sistema, insira outro id: ");
+                                            break;
+                                        }
+                                    };
+                                } catch(InputMismatchException e) {
+                                    System.out.println("Entrada inválida! Digite um número válido.");
+                                    scanner.nextLine(); 
+                                }
                             }while(IdExist);
                             scanner.nextLine();
 
-                            produto.setID(novoID);
-                            System.out.println("O ID foi alterado com sucesso. ");
+                            System.out.println("Deseja confirmar alteração de ID? (s/n)");
+                            char confirmacao = scanner.next().charAt(0);
+                            scanner.nextLine();
+
+                            if(confirmacao == 's' || confirmacao == 'S'){
+                                produto.setID(novoID);
+                                System.out.println("O ID foi alterado com sucesso. ");
+                            }else{
+                                System.out.println("Operação cancelada. ");
+                            }
+
                             break;
                         case 2:
                             System.out.println("Informe o novo nome do produto: ");
                             String novoNome = scanner.nextLine();
-                            produto.setNome(novoNome);
+                            
+                            System.out.println("Deseja confirmar alteração de nome? (s/n)");
+                            confirmacao = scanner.next().charAt(0);
+                            scanner.nextLine();
+
+                            if(confirmacao == 's' || confirmacao == 'S'){
+                                produto.setNome(novoNome);
+                                System.out.println("O nome foi alterado com sucesso. ");
+                            }else{
+                                System.out.println("Operação cancelada. ");
+                            }
+
                             break;
                         case 3:
                             System.out.println("Informe a nova categoria do produto: ");
                             String novaCat = scanner.nextLine();
-                            produto.setCategoria(novaCat);
+
+                            System.out.println("Deseja confirmar alteração de categoria? (s/n)");
+                            confirmacao = scanner.next().charAt(0);
+                            scanner.nextLine();
+
+                            if(confirmacao == 's' || confirmacao == 'S'){
+                                produto.setCategoria(novaCat);
+                                System.out.println("A categoria foi alterado com sucesso. ");
+                            }else{
+                                System.out.println("Operação cancelada. ");
+                            }
+
                             break;
                         case 4:
-                            System.out.println("Informe o novo preço de venda do produto: ");
-                            Double novoPreco = scanner.nextDouble();
+                            boolean valorLido = false;
+                            Double novoPreco = -1.0;
+                            do{
+                                try{
+                                    System.out.println("Informe o novo preço de venda do produto: ");
+                                    novoPreco = scanner.nextDouble();
+                                    scanner.nextLine();
+                                    valorLido = true;
+                                } catch(InputMismatchException e) {
+                                    System.out.println("Entrada inválida! Digite um número válido.");
+                                    scanner.nextLine(); 
+                                }
+                            }while(!valorLido);
+
+                            System.out.println("Deseja confirmar alteração de preço? (s/n)");
+                            confirmacao = scanner.next().charAt(0);
                             scanner.nextLine();
-                            produto.setPrice(novoPreco);
+
+                            if(confirmacao == 's' || confirmacao == 'S'){
+                                produto.setPrice(novoPreco);
+                                System.out.println("O preço foi alterado com sucesso. ");
+                            }else{
+                                System.out.println("Operação cancelada. ");
+                            }
                             break;
                         case 5:
-                            System.out.println("Informe o novo custo de compra do produto: ");
-                            Double novoCost = scanner.nextDouble();
+                            valorLido = false;
+                            Double novoCost = -1.0;
+                            do{
+                                try{
+                                    System.out.println("Informe o novo custo de compra do produto: ");
+                                    novoCost = scanner.nextDouble();
+                                    scanner.nextLine();
+                                    valorLido = true;
+                                } catch(InputMismatchException e) {
+                                    System.out.println("Entrada inválida! Digite um número válido.");
+                                    scanner.nextLine(); 
+                                }
+                            }while(!valorLido);
+
+                            System.out.println("Deseja confirmar alteração de custo? (s/n)");
+                            confirmacao = scanner.next().charAt(0);
                             scanner.nextLine();
-                            produto.setCost(novoCost);
+
+                            if(confirmacao == 's' || confirmacao == 'S'){
+                                produto.setCost(novoCost);
+                                System.out.println("O custo foi alterado com sucesso. ");
+                            }else{
+                                System.out.println("Operação cancelada. ");
+                            }
+                            
                             break;
                         case 6:
-                            System.out.println("Informe o novo estoque mínimo desejado do produto: ");
-                            int novoMinCapacity = scanner.nextInt();
+                            valorLido = false;
+                            int novoMinCapacity = -1;
+                            do{
+                                try{
+                                    System.out.println("Informe o novo estoque mínimo desejado do produto: ");
+                                    novoMinCapacity = scanner.nextInt();
+                                    scanner.nextLine();
+                                    valorLido = true;
+                                } catch(InputMismatchException e) {
+                                    System.out.println("Entrada inválida! Digite um número válido.");
+                                    scanner.nextLine(); 
+                                }
+                            }while(!valorLido);
+
+                            System.out.println("Deseja confirmar alteração da capacidade mínima desejada? (s/n)");
+                            confirmacao = scanner.next().charAt(0);
                             scanner.nextLine();
-                            produto.setMinCapacity(novoMinCapacity);
+
+                            if(confirmacao == 's' || confirmacao == 'S'){
+                                produto.setMinCapacity(novoMinCapacity);
+                                System.out.println("A capacidade mínima foi alterada com sucesso. ");
+                            }else{
+                                System.out.println("Operação cancelada. ");
+                            }
+
                             break;
                         case 7:
-                            System.out.println("Informe a nova capacidade máxima de estoque do produto: ");
-                            int novoMaxCapacity = scanner.nextInt();
+                            valorLido = false;
+                            int novoMaxCapacity = -1;
+                            do{
+                                try{
+                                    System.out.println("Informe a nova capacidade máxima de estoque do produto: ");
+                                    novoMaxCapacity = scanner.nextInt();
+                                    scanner.nextLine();
+                                    valorLido = true;
+                                } catch(InputMismatchException e) {
+                                    System.out.println("Entrada inválida! Digite um número válido.");
+                                    scanner.nextLine(); 
+                                }
+                            }while(!valorLido);
+
+                            System.out.println("Deseja confirmar alteração da capacidade máxima? (s/n)");
+                            confirmacao = scanner.next().charAt(0);
                             scanner.nextLine();
-                            produto.setMaxCapacity(novoMaxCapacity);
+
+                            if(confirmacao == 's' || confirmacao == 'S'){
+                                produto.setMaxCapacity(novoMaxCapacity);
+                                System.out.println("A capacidade mínima foi alterada com sucesso. ");
+                            }else{
+                                System.out.println("Operação cancelada. ");
+                            }
                             break;
                         case 8:
-                            int novoFornecedorID;
-                            System.out.print("Digite o novo ID de fornecedor: ");
-                            novoFornecedorID = scanner.nextInt();
-                            scanner.nextLine();
+                            valorLido = false;
+                            int novoFornecedorID = -1;
+                            do{
+                                try{
+                                    System.out.print("Digite o novo ID de fornecedor: ");
+                                    novoFornecedorID = scanner.nextInt();
+                                    scanner.nextLine();
+                                    valorLido = true;
+                                } catch(InputMismatchException e) {
+                                    System.out.println("Entrada inválida! Digite um número válido.");
+                                    scanner.nextLine(); 
+                                }
+                            }while(!valorLido);
+
                             Fornecedor novoFornecedor = encontrarFornecedorPorId(novoFornecedorID);
                             if(novoFornecedor!=null){
-                                produto.setFornecedor(novoFornecedor);
+                                System.out.println("Deseja confirmar alteração de fornecedor? (s/n)");
+                                confirmacao = scanner.next().charAt(0);
+                                scanner.nextLine();
+
+                                if(confirmacao == 's' || confirmacao == 'S'){
+                                    produto.setFornecedor(novoFornecedor);
+                                    System.out.println("O fornecedor foi alterada com sucesso. ");
+                                }else{
+                                    System.out.println("Operação cancelada. ");
+                                }
                             }else{
                                 System.out.println("Fornecedor não encontrado.");
                             }
@@ -522,12 +671,15 @@ public class Gerente extends Usuario {
             }
         }
     }
+    
     // ARRUMAR OQ APARECE
     public void listarProdutos() {
+        System.out.println("Produtos:");
         for(int i=0; i<Sistema.products.size();i++){
             Produto produto = Sistema.products.get(i);
-            System.out.print(produto.getId()+ "- ");
+            System.out.print(produto.getId() + "- ");
             System.out.println(produto.getNome());
+            System.out.println();
         }
     }
 
@@ -540,39 +692,51 @@ public class Gerente extends Usuario {
         return null;
     }
 
-    //VE COMO VAI FAZER A BUSCA A PARTIR DE QUALQUER UM DOS ELEMENTOS OU TIRAR ISSO DO DOCS
     public void consultarProduto(Scanner scanner){
-        int opcao;
+        int opcao = -1;
 
         do {
-            System.out.println("\nOpções:");
-            System.out.println("1. Consultar todos os produtos");
-            System.out.println("2. Consultar produto pelo ID");
-            System.out.println("0. Voltar");
-            System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
-
-            switch (opcao) {
-                case 1:
-                    listarProdutos();
+            try{
+                System.out.println("\nOpções:");
+                System.out.println("1. Consultar todos os produtos");
+                System.out.println("2. Consultar produto pelo ID");
+                System.out.println("0. Voltar");
+                System.out.print("Escolha uma opção: ");
+                opcao = scanner.nextInt();
+    
+                switch (opcao) {
+                    case 1:
+                        for(Produto p : Sistema.products){
+                            p.mostrarProduto();
+                        }
                     break;
-                case 2:
-                    System.out.print("Digite o ID do Produto: ");
-                    int id = scanner.nextInt();
-                    Produto produto = encontrarProdutoPorId(id);
-            
-                    //FAZER: PEDIR CONFIRMAÇÃO PARA REMOVER
-                    if (produto != null) {
-                        produto.mostrarProduto();
-                    } else {
-                        System.out.println("Produto não encontrado.");
-                    }
-                    break;
-                case 0:
-                    System.out.println("Voltar.");
-                    break;
-                default:
-                    System.out.println("Opção inválida. Tente novamente.");
+                    case 2:
+                        Produto produto = null;
+                        listarProdutos();
+                        try{
+                            System.out.print("Digite o ID do Produto: ");
+                            int id = scanner.nextInt();
+                            produto = encontrarProdutoPorId(id);
+                        } catch(InputMismatchException e) {
+                            System.out.println("Entrada inválida! Digite um número válido.");
+                            scanner.nextLine(); 
+                        }
+                
+                        if (produto != null) {
+                            produto.mostrarProduto();
+                        } else {
+                            System.out.println("Produto não encontrado.");
+                        }
+                        break;
+                    case 0:
+                        System.out.println("Voltar.");
+                        break;
+                    default:
+                        System.out.println("Opção inválida. Tente novamente.");
+                }
+            } catch(InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
             }
         } while (opcao != 0);
     }

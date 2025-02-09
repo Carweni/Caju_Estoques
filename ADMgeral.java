@@ -126,7 +126,6 @@ public class ADMgeral extends Usuario {
 
         Gerente novoGerente = new Gerente(nome, id, cargo, senha, permission);
         Sistema.users.add(novoGerente);
-        Sistema.salvarUsuarios();
 
         limparConsole();
         System.out.println("Usuário Gerente cadastrado com sucesso.");
@@ -185,7 +184,6 @@ public class ADMgeral extends Usuario {
 
             limparConsole();
             ((Gerente)usuario).setPermissao(permission);
-            Sistema.salvarUsuarios();
             System.out.println("Permissão de gerente alterada com sucesso.");
         } else {
             limparConsole();
@@ -220,7 +218,6 @@ public class ADMgeral extends Usuario {
                 
                 if (confirmacao == 's' || confirmacao == 'S'){
                     Sistema.users.remove(usuario);
-                    Sistema.salvarUsuarios();
                     limparConsole();
                     System.out.println("Usuário removido com sucesso.");
                 }else{

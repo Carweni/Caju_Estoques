@@ -46,6 +46,10 @@ public class Sistema {
 
         do {
             try {
+                salvarFornecedores();
+                salvarMovimentacoes();
+                salvarProdutos();  
+                salvarUsuarios();
                 System.out.println("\nInício:");
                 System.out.println("1. Entrar");
                 System.out.println("0. Sair");

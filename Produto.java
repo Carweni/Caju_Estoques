@@ -93,7 +93,7 @@ public class Produto implements Serializable {
 
     public void mostrarProduto(){
         System.out.println("\n" + ID + " - " + nome + ": ");
-        System.out.println("Categoria: " + this.categoria + "\nCusto de Compra: R$ " + this.cost + "\nPreço de Venda: R$" + this.price);
+        System.out.println("Categoria: " + this.categoria + "\nCusto de Compra: R$" + String.format("%.2f", this.cost) + "\nPreço de Venda: R$" + String.format("%.2f", this.price));
         System.out.println("Quantia mínima recomendada: " + minCapacity + "\nCapacidade máxima: " + maxCapacity);
         System.out.println("Quantidade atual em estoque: " + qtdEstoque + "\nFornecedor associado: " + fornecedor.getNome());
     }

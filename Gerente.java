@@ -191,7 +191,6 @@ public class Gerente extends Usuario {
         String contato = scanner.nextLine();
 
         Sistema.fornecedores.add(new Fornecedor(nome, id, contato));
-        Sistema.salvarFornecedores();
         limparConsole();
         System.out.println("Fornecedor cadastrado com sucesso.");
     }
@@ -227,7 +226,6 @@ public class Gerente extends Usuario {
                 
                 if (confirmacao == 's' || confirmacao == 'S'){
                     Sistema.fornecedores.remove(fornecedor);
-                    Sistema.salvarFornecedores();
                     limparConsole();
                     System.out.println("Fornecedor removido com sucesso.");
                 }else{
@@ -369,7 +367,6 @@ public class Gerente extends Usuario {
             Produto produto = new Produto(nome, id, categoria, price, cost, minCapacity, maxCapacity, fornecedor);
     
             Sistema.products.add(produto);
-            Sistema.salvarProdutos();
             limparConsole();
             System.out.println("Produto cadastrado com sucesso.");
         } else {
@@ -405,7 +402,6 @@ public class Gerente extends Usuario {
 
                     if(confirmacao == 's' || confirmacao == 'S'){
                         Sistema.products.remove(produto);
-                        Sistema.salvarProdutos();
                         limparConsole();
                         System.out.println("Produto removido com sucesso.");
                     }else{
@@ -698,7 +694,6 @@ public class Gerente extends Usuario {
                             System.out.println("Opção inválida. Tente novamente.");
                     }
                 } while (opcao != 0);
-                Sistema.salvarProdutos();
             }else{
                 System.out.println("Produto não encontrado. ");
             }
@@ -773,7 +768,6 @@ public class Gerente extends Usuario {
             }
         } while (opcao != 0);
     }
-    // ARRUMAR QUE N TA SALVANDO AS MOVIMENTAÇÕES
     // ARRUMAR OS LIMPAR CONSOLE
     public void entradaProduto(Scanner scanner) {
         limparConsole();
@@ -816,7 +810,7 @@ public class Gerente extends Usuario {
             }
         }
 
-        if (fornecedorExist) {
+        if (!fornecedorExist) {
             System.out.println("O fornecedor deste produto foi removido. Não é possível registrar a entrada.");
             return; 
         }
@@ -841,7 +835,6 @@ public class Gerente extends Usuario {
     
         Movimentacao mov = new Movimentacao("entrada", qtde, produto, this, Sistema.movimentacoes.size() + 1);
         Sistema.movimentacoes.add(mov);
-        Sistema.salvarMovimentacoes();
         limparConsole();
         System.out.println("Operação realizada com sucesso.");
     }
@@ -924,7 +917,6 @@ public class Gerente extends Usuario {
         
         Movimentacao mov = new Movimentacao("saída", qtde, produto, this, Sistema.movimentacoes.size() + 1);
         Sistema.movimentacoes.add(mov);
-        Sistema.salvarMovimentacoes();
         limparConsole();
         System.out.println("Operação realizada com sucesso.");
     }
@@ -957,11 +949,23 @@ public class Gerente extends Usuario {
     }
 
     public void gerarRelatorioMovimentacoes() {
-        for(Movimentacao m : Sistema.movimentacoes){
-            System.out.println(m.getProduto().getNome());
-            System.out.println(m.getQuantia());
-            System.out.println(m.getTipo());
-            System.out.println();
+        System.out.println("\nRelatório de Movimentações de Estoque");
+        System.out.println("---------------------------------------------------");
+        
+        if (Sistema.movimentacoes.isEmpty()) {
+            System.out.println("Nenhuma movimentação registrada.");
+            System.out.println("---------------------------------------------------");
+            return;
+        }
+        
+        for (Movimentacao m : Sistema.movimentacoes) {   
+            String movString = m.getTipo().equals("entrada") ? "adicionada" : "retirada";
+            System.out.println("ID: " + m.getId());
+            System.out.println("Produto: " + m.getProduto().getNome());
+            System.out.println("Quantidade " + movString + ": " + m.getQuantia());
+            System.out.println("Tipo: " + m.getTipo());
+            System.out.println("Responsável: " + m.getGerente().getNome());
+            System.out.println("---------------------------------------------------");
         }
     }
 
@@ -979,6 +983,7 @@ public class Gerente extends Usuario {
     
                 switch (opcao) {
                     case 1:
+                    // Implementar
                     break;
                     case 2:
                         Produto produto = null;

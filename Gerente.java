@@ -133,7 +133,7 @@ public class Gerente extends Usuario {
                         gerarRelatorioMovimentacoes();
                         break;
                     case 10:
-                        //gerarRelatorioEstoque();
+                        gerarRelatorioEstoque(scanner);
                         break;
                     case 11:
                         gerarRelatorioSugestaoCompra();
@@ -956,14 +956,6 @@ public class Gerente extends Usuario {
         }
     }
 
-    public static void limparConsole() {
-        try {
-            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-        } catch (Exception e) {
-            System.out.println("Erro ao limpar console");
-        }
-    } 
-    
     public void gerarRelatorioMovimentacoes() {
         for(Movimentacao m : Sistema.movimentacoes){
             System.out.println(m.getProduto().getNome());
@@ -972,4 +964,89 @@ public class Gerente extends Usuario {
             System.out.println();
         }
     }
+
+    public void gerarRelatorioEstoque(Scanner scanner) {
+        int opcao = -1;
+
+        do {
+            try{
+                System.out.println("\nOpções:");
+                System.out.println("1. Gerar relatório para todos os produtos");
+                System.out.println("2. Gerar relatório de um produto");
+                System.out.println("0. Voltar");
+                System.out.print("Escolha uma opção: ");
+                opcao = scanner.nextInt();
+    
+                switch (opcao) {
+                    case 1:
+                    break;
+                    case 2:
+                        Produto produto = null;
+                        listarProdutos();
+                        try{
+                            System.out.print("Digite o ID do Produto: ");
+                            int id = scanner.nextInt();
+                            produto = encontrarProdutoPorId(id);
+                        } catch(InputMismatchException e) {
+                            System.out.println("Entrada inválida! Digite um número válido.");
+                            scanner.nextLine(); 
+                        }
+                
+                        if (produto != null) {
+                            System.out.println("\nRelatório de Estoque");
+                            System.out.println("--------------------------------------");
+                            System.out.println("\nNome do Produto: " + produto.getNome());
+                            System.out.println("Quantia em estoque: " + produto.getQtdEstoque());
+                            System.out.println("Capacidade de armazenamento máxima: " + produto.getMaxCapacity());
+                            System.out.println("Mínimo estoque desejado: " + produto.getMinCapacity());
+                            System.out.println("Custo por unidade: " + produto.getCost());
+                            System.out.println("Preço de venda: " + produto.getPrice());
+                            double lucroUnidade = produto.getPrice()-produto.getCost();
+                            System.out.println("Lucro por produto: " + lucroUnidade);
+                            double lucro=0;
+                            int comprados=0, vendidos=0;
+                            for(Movimentacao m : Sistema.movimentacoes){
+                                if(m.getProduto().getId() == produto.getId()){
+                                    if(m.getTipo() == "entrada"){
+                                        lucro-=(m.getQuantia()*m.getProduto().getCost());
+                                        comprados+=m.getQuantia();
+                                    }
+                                    if(m.getTipo() == "saida"){
+                                        lucro += (m.getQuantia()*m.getProduto().getPrice());
+                                        vendidos+=m.getQuantia();
+                                    }
+                                }
+                            }
+                            System.out.println("Total de produtos comprados: " + comprados);
+                            System.out.println("Total de produtos vendidos: " + vendidos);
+                            System.out.println("Total de lucro do produto: " + lucro);
+                            System.out.println();
+                            if(produto.getQtdEstoque()<produto.getMinCapacity()){
+                                System.out.println("**** Produto em quantidade menor que o desejado: SUGESTÃO DE COMPRA ****\n");
+                            }
+                        } else {
+                            System.out.println("Produto não encontrado.");
+                        }
+                        break;
+                    case 0:
+                        System.out.println("Voltar.");
+                        break;
+                    default:
+                        System.out.println("Opção inválida. Tente novamente.");
+                }
+            } catch(InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
+            }
+        } while (opcao != 0);
+    }
+
+    public static void limparConsole() {
+        try {
+            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        } catch (Exception e) {
+            System.out.println("Erro ao limpar console");
+        }
+    } 
+    
 }

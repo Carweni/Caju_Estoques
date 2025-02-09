@@ -47,6 +47,14 @@ public class Produto implements Serializable {
         return this.fornecedor;
     }
 
+    public double getPrice(){
+        return price;
+    }
+
+    public double getCost(){
+        return cost;
+    }
+
     public void setID(int id){
         this.ID = id;
     }

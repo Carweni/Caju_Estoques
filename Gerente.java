@@ -130,7 +130,7 @@ public class Gerente extends Usuario {
                         consultarProduto(scanner);
                         break;
                     case 9:
-                        gerarRelatorioMovimentacoes();
+                        gerarRelatorioMovimentacoes(scanner);
                         break;
                     case 10:
                         gerarRelatorioEstoque(scanner);
@@ -804,7 +804,7 @@ public class Gerente extends Usuario {
         Fornecedor fornecedor = produto.getFornecedor();
         boolean fornecedorExist = false;
         for(Fornecedor f : Sistema.fornecedores){
-            if(fornecedor == f){
+            if(fornecedor.getId() == f.getId()){
                 fornecedorExist = true;
                 break;
             }
@@ -947,43 +947,40 @@ public class Gerente extends Usuario {
             System.out.println("--------------------------------------");
         }
     }
-
-    public void gerarRelatorioMovimentacoes() {
-        System.out.println("\nRelatório de Movimentações de Estoque");
-        System.out.println("---------------------------------------------------");
-        
-        if (Sistema.movimentacoes.isEmpty()) {
-            System.out.println("Nenhuma movimentação registrada.");
-            System.out.println("---------------------------------------------------");
-            return;
-        }
-        
-        for (Movimentacao m : Sistema.movimentacoes) {   
-            String movString = m.getTipo().equals("entrada") ? "adicionada" : "retirada";
-            System.out.println("ID: " + m.getId());
-            System.out.println("Produto: " + m.getProduto().getNome());
-            System.out.println("Quantidade " + movString + ": " + m.getQuantia());
-            System.out.println("Tipo: " + m.getTipo());
-            System.out.println("Responsável: " + m.getGerente().getNome());
-            System.out.println("---------------------------------------------------");
-        }
-    }
-
-    public void gerarRelatorioEstoque(Scanner scanner) {
+    // FALTA TESTAR
+    public void gerarRelatorioMovimentacoes(Scanner scanner) { 
         int opcao = -1;
 
         do {
             try{
                 System.out.println("\nOpções:");
-                System.out.println("1. Gerar relatório para todos os produtos");
-                System.out.println("2. Gerar relatório de um produto");
+                System.out.println("1. Gerar relatório de todas as movimentações");
+                System.out.println("2. Gerar relatório de um produto específico");
                 System.out.println("0. Voltar");
                 System.out.print("Escolha uma opção: ");
                 opcao = scanner.nextInt();
-    
+                
+                System.out.println("\nRelatório de Estoque");
                 switch (opcao) {
                     case 1:
-                    // Implementar
+                        System.out.println("\nRelatório de Movimentações de Estoque");
+                        System.out.println("---------------------------------------------------");
+                        
+                        if (Sistema.movimentacoes.isEmpty()) {
+                            System.out.println("Nenhuma movimentação registrada.");
+                            System.out.println("---------------------------------------------------\n");
+                            return;
+                        }
+                        
+                        for (Movimentacao m : Sistema.movimentacoes) {   
+                            String movString = m.getTipo().equals("entrada") ? "adicionada" : "retirada";
+                            System.out.println("ID: " + m.getId());
+                            System.out.println("Produto: " + m.getProduto().getNome());
+                            System.out.println("Quantidade " + movString + ": " + m.getQuantia());
+                            System.out.println("Tipo: " + m.getTipo());
+                            System.out.println("Responsável: " + m.getGerente().getNome());
+                            System.out.println("---------------------------------------------------\n");
+                        }
                     break;
                     case 2:
                         Produto produto = null;
@@ -995,6 +992,139 @@ public class Gerente extends Usuario {
                         } catch(InputMismatchException e) {
                             System.out.println("Entrada inválida! Digite um número válido.");
                             scanner.nextLine(); 
+                        }
+                
+                        if (produto != null) {
+                            System.out.println("\nRelatório de Movimentações de Estoque de " + produto.getNome());
+                            System.out.println("---------------------------------------------------");
+                            
+                            boolean hasMovimentação = false;
+                            for (Movimentacao m : Sistema.movimentacoes) {   
+                                if(m.getProduto().getId() == produto.getId()){
+                                    hasMovimentação = true;
+                                    break;
+                                }
+                            }
+
+                            if (Sistema.movimentacoes.isEmpty() && !hasMovimentação) {
+                                System.out.println("Nenhuma movimentação registrada.");
+                                System.out.println("---------------------------------------------------\n");
+                                return;
+                            }
+                            
+                            for (Movimentacao m : Sistema.movimentacoes) {
+                                if(m.getProduto().getId() == produto.getId()){
+                                    String movString = m.getTipo().equals("entrada") ? "adicionada" : "retirada";
+                                    System.out.println("ID: " + m.getId());
+                                    System.out.println("Produto: " + m.getProduto().getNome());
+                                    System.out.println("Quantidade " + movString + ": " + m.getQuantia());
+                                    System.out.println("Tipo: " + m.getTipo());
+                                    System.out.println("Responsável: " + m.getGerente().getNome());
+                                    System.out.println("---------------------------------------------------\n");
+                                }
+                            }
+                        } else {
+                            System.out.println("Produto não encontrado.");
+                        }
+                        break;
+                    case 0:
+                        System.out.println("Voltar.");
+                        break;
+                    default:
+                        System.out.println("Opção inválida. Tente novamente.");
+                }
+            } catch(InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite um número válido.");
+                scanner.nextLine(); 
+            }
+        } while (opcao != 0);
+    }
+    // FALTA TESTAR
+    public void gerarRelatorioEstoque(Scanner scanner) {
+        int opcao = -1;
+
+        do {
+            try{
+                System.out.println("\nOpções:");
+                System.out.println("1. Gerar relatório para todos os produtos");
+                System.out.println("2. Gerar relatório de um produto");
+                System.out.println("0. Voltar");
+                System.out.print("Escolha uma opção: ");
+                opcao = scanner.nextInt();
+                
+                Produto produto = null;
+                boolean hasFornecedor = false;
+                switch (opcao) {
+                    case 1:
+                        System.out.println("\nRelatório de Estoque");
+                        for(Produto p : Sistema.products){
+                            hasFornecedor = false;
+
+                            for(Fornecedor f : Sistema.fornecedores){
+                                if(p.getFornecedor().getId() == f.getId()){
+                                    hasFornecedor = true;
+                                    break;
+                                }
+                            }
+                    
+                            if (p != null) {
+                                
+                                System.out.println("\n--------------------------------------");
+                                System.out.println("\nNome do Produto: " + p.getNome());
+                                System.out.println("Quantia em estoque: " + p.getQtdEstoque());
+                                System.out.println("Capacidade de armazenamento máxima: " + p.getMaxCapacity());
+                                System.out.println("Mínimo estoque desejado: " + p.getMinCapacity());
+                                System.out.println("Custo por unidade: " + p.getCost());
+                                System.out.println("Preço de venda: " + p.getPrice());
+                                double lucroUnidade = p.getPrice()-p.getCost();
+                                System.out.println("Lucro por produto: " + lucroUnidade);
+                                double lucro=0;
+                                int comprados=0, vendidos=0;
+                                for(Movimentacao m : Sistema.movimentacoes){
+                                    if(m.getProduto().getId() == p.getId()){
+                                        if(m.getTipo() == "entrada"){
+                                            lucro-=(m.getQuantia()*m.getProduto().getCost());
+                                            comprados+=m.getQuantia();
+                                        }
+                                        if(m.getTipo() == "saida"){
+                                            lucro += (m.getQuantia()*m.getProduto().getPrice());
+                                            vendidos+=m.getQuantia();
+                                        }
+                                    }
+                                }
+                                System.out.println("Total de produtos comprados: " + comprados);
+                                System.out.println("Total de produtos vendidos: " + vendidos);
+                                System.out.println("Total de lucro do produto: " + lucro);
+                                System.out.println();
+                                if(!hasFornecedor && p.getQtdEstoque()==0){
+                                    System.out.println("**** Produto necessita de outro fornecedor ou ser removido do sistema ****");
+                                } else if(hasFornecedor && p.getQtdEstoque()<p.getMinCapacity()){
+                                    System.out.println("**** Produto em quantidade menor que o desejado: SUGESTÃO DE COMPRA ****\n");
+                                }
+                                System.err.println("-----------------------------------\n");
+                            } else {
+                                System.out.println("Produto não encontrado.");
+                            }
+                        }
+                    break;
+                    case 2:
+                        produto = null;
+                        hasFornecedor = false;
+                        listarProdutos();
+                        try{
+                            System.out.print("Digite o ID do Produto: ");
+                            int id = scanner.nextInt();
+                            produto = encontrarProdutoPorId(id);
+                        } catch(InputMismatchException e) {
+                            System.out.println("Entrada inválida! Digite um número válido.");
+                            scanner.nextLine(); 
+                        }
+
+                        for(Fornecedor f : Sistema.fornecedores){
+                            if(produto.getFornecedor().getId() == f.getId()){
+                                hasFornecedor = true;
+                                break;
+                            }
                         }
                 
                         if (produto != null) {
@@ -1026,9 +1156,12 @@ public class Gerente extends Usuario {
                             System.out.println("Total de produtos vendidos: " + vendidos);
                             System.out.println("Total de lucro do produto: " + lucro);
                             System.out.println();
-                            if(produto.getQtdEstoque()<produto.getMinCapacity()){
+                            if(!hasFornecedor && produto.getQtdEstoque()==0){
+                                System.out.println("**** Produto necessita de outro fornecedor ou ser removido do sistema ****");
+                            } else if(hasFornecedor && produto.getQtdEstoque()<produto.getMinCapacity()){
                                 System.out.println("**** Produto em quantidade menor que o desejado: SUGESTÃO DE COMPRA ****\n");
                             }
+                            System.err.println("-----------------------------------");
                         } else {
                             System.out.println("Produto não encontrado.");
                         }

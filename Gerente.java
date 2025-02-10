@@ -915,7 +915,7 @@ public class Gerente extends Usuario {
             }
         }while (!validqtde);
         
-        Movimentacao mov = new Movimentacao("saída", qtde, produto, this, Sistema.movimentacoes.size() + 1);
+        Movimentacao mov = new Movimentacao("saida", qtde, produto, this, Sistema.movimentacoes.size() + 1);
         Sistema.movimentacoes.add(mov);
         limparConsole();
         System.out.println("Operação realizada com sucesso.");
@@ -1039,7 +1039,7 @@ public class Gerente extends Usuario {
             }
         } while (opcao != 0);
     }
-    // FALTA TESTAR
+    
     public void gerarRelatorioEstoque(Scanner scanner) {
         int opcao = -1;
 
@@ -1074,19 +1074,19 @@ public class Gerente extends Usuario {
                                 System.out.println("Quantia em estoque: " + p.getQtdEstoque());
                                 System.out.println("Capacidade de armazenamento máxima: " + p.getMaxCapacity());
                                 System.out.println("Mínimo estoque desejado: " + p.getMinCapacity());
-                                System.out.println("Custo por unidade: " + p.getCost());
-                                System.out.println("Preço de venda: " + p.getPrice());
+                                System.out.println("Custo por unidade: R$" + String.format("%.2f", p.getCost()));
+                                System.out.println("Preço de venda: R$" + String.format("%.2f", p.getPrice()));
                                 double lucroUnidade = p.getPrice()-p.getCost();
-                                System.out.println("Lucro por produto: " + lucroUnidade);
+                                System.out.println("Lucro por produto: R$" + String.format("%.2f", lucroUnidade));
                                 double lucro=0;
                                 int comprados=0, vendidos=0;
                                 for(Movimentacao m : Sistema.movimentacoes){
                                     if(m.getProduto().getId() == p.getId()){
-                                        if(m.getTipo() == "entrada"){
+                                        if(m.getTipo().equals("entrada")){
                                             lucro-=(m.getQuantia()*m.getProduto().getCost());
                                             comprados+=m.getQuantia();
                                         }
-                                        if(m.getTipo() == "saida"){
+                                        else{
                                             lucro += (m.getQuantia()*m.getProduto().getPrice());
                                             vendidos+=m.getQuantia();
                                         }
@@ -1094,7 +1094,7 @@ public class Gerente extends Usuario {
                                 }
                                 System.out.println("Total de produtos comprados: " + comprados);
                                 System.out.println("Total de produtos vendidos: " + vendidos);
-                                System.out.println("Total de lucro do produto: " + lucro);
+                                System.out.println("Total de lucro do produto: R$" + String.format("%.2f", lucro));
                                 System.out.println();
                                 if(!hasFornecedor && p.getQtdEstoque()==0){
                                     System.out.println("**** Produto necessita de outro fornecedor ou ser removido do sistema ****");
@@ -1134,19 +1134,19 @@ public class Gerente extends Usuario {
                             System.out.println("Quantia em estoque: " + produto.getQtdEstoque());
                             System.out.println("Capacidade de armazenamento máxima: " + produto.getMaxCapacity());
                             System.out.println("Mínimo estoque desejado: " + produto.getMinCapacity());
-                            System.out.println("Custo por unidade: " + produto.getCost());
-                            System.out.println("Preço de venda: " + produto.getPrice());
+                            System.out.println("Custo por unidade: R$" + String.format("%.2f", produto.getCost()));
+                            System.out.println("Preço de venda: R$" + String.format("%.2f", produto.getPrice()));
                             double lucroUnidade = produto.getPrice()-produto.getCost();
-                            System.out.println("Lucro por produto: " + lucroUnidade);
+                            System.out.println("Lucro por produto: R$" + String.format("%.2f", lucroUnidade));
                             double lucro=0;
                             int comprados=0, vendidos=0;
                             for(Movimentacao m : Sistema.movimentacoes){
                                 if(m.getProduto().getId() == produto.getId()){
-                                    if(m.getTipo() == "entrada"){
+                                    if(m.getTipo().equals("entrada")){
                                         lucro-=(m.getQuantia()*m.getProduto().getCost());
                                         comprados+=m.getQuantia();
                                     }
-                                    if(m.getTipo() == "saida"){
+                                    else{
                                         lucro += (m.getQuantia()*m.getProduto().getPrice());
                                         vendidos+=m.getQuantia();
                                     }
@@ -1154,7 +1154,7 @@ public class Gerente extends Usuario {
                             }
                             System.out.println("Total de produtos comprados: " + comprados);
                             System.out.println("Total de produtos vendidos: " + vendidos);
-                            System.out.println("Total de lucro do produto: " + lucro);
+                            System.out.println("Total de lucro do produto: R$" + String.format("%.2f", lucro));
                             System.out.println();
                             if(!hasFornecedor && produto.getQtdEstoque()==0){
                                 System.out.println("**** Produto necessita de outro fornecedor ou ser removido do sistema ****");

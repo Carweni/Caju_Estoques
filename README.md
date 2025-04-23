@@ -24,8 +24,8 @@ O documento original especifica os requisitos funcionais e não funcionais, esco
 
 ## 📦 Tecnologias Utilizadas
 
-> Java
-> Visual Code Studio
+- Java
+- Visual Code Studio
 
 ## 📚 Licença
 
